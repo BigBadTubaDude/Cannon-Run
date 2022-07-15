@@ -1,0 +1,12 @@
+<head>
+</head>
+<body>
+<script>
+var rect = new Rectangle(300,30,blue).center();
+rect.color = purple;
+rect.loc(10,20);
+</script>
+</body>
+var rect = new Rectangle(300,30,blue).center();
+rect.color = purple;
+rect.loc(10,20);
