@@ -46,19 +46,27 @@ var defender2Speed = 3;
 //Defender3
 var defender3Xpos = canvasWidth - enemyWallWidth - (defenderGap * 3) - (defenderWidth * 3);
 var defender3Ypos = 150;
-var defender3YTopRange = 80;
+var defender3YTopRange = 50;
 var defender3YBottomRange = canvasHeight - 10;
 var defender3Health = 200;
 var defender3Height = 100;
 var defender3Speed = 6;
 //Defender4
-var defender4Xpos = canvasWidth - enemyWallWidth - (defenderGap * 4) - (defenderWidth * 4) + 75;
+var defender4Xpos = canvasWidth - enemyWallWidth - (defenderGap * 4) - (defenderWidth * 4) + 60;
 var defender4Ypos = 10;
 var defender4YTopRange = 10;
 var defender4YBottomRange = canvasHeight - 50;
 var defender4Health = 200;
 var defender4Height = 100;
 var defender4Speed = 7;
+//Defender5
+var defender5Xpos = canvasWidth - enemyWallWidth - (defenderGap * 5) - (defenderWidth * 5) + 120;
+var defender5Ypos = 10;
+var defender5YTopRange = 10;
+var defender5YBottomRange = canvasHeight - 10;
+var defender5Health = 200;
+var defender5Height = 100;
+var defender5Speed = 7;
 
 var playerPoints = 0;
 var playerMoveSpeed = 5;
@@ -109,8 +117,8 @@ class Defender {
 		defenders.push(this);
 	}
 	create(context) {
-		context.fillStyle = this.color;
-		context.fillRect(this.xpos, this.ypos, this.width, this.height);
+			context.fillStyle = this.color;
+			context.fillRect(this.xpos, this.ypos, this.width, this.height);
 		}
 	move() {
 		if (this.goingUp){
@@ -139,6 +147,9 @@ Defender3.list();
 var Defender4 = new Defender(defender4Xpos, defender4Ypos, defender4YTopRange, defender4YBottomRange, defenderWidth,defender4Height,defenderColor,defender4Speed,defender4Health,true,true)
 Defender4.create(context);
 Defender4.list();
+var Defender5 = new Defender(defender5Xpos, defender5Ypos, defender5YTopRange, defender5YBottomRange, defenderWidth,defender5Height,defenderColor,defender5Speed,defender5Health,true,true)
+Defender5.create(context);
+Defender5.list();
 
 
 //Run Game
@@ -159,14 +170,15 @@ function gameLoop() {
 	createWall(enemyWallXPos, 0, enemyWallWidth, canvasHeight, enemyWallColor)
 
 	//Create Defenders
-	Defender1.create(context);
-	Defender1.move();
-	Defender2.create(context);
-	Defender2.move();
-	Defender3.create(context);
-	Defender3.move();
-	Defender4.create(context);
-	Defender4.move();	
+	for (var i = 0; i < defenders.length; i++) {
+		if (defenders[i].health > 0) {
+			defenders[i].create(context);
+			defenders[i].move();
+		}
+		else {
+			defenders.splice(i,1);
+		}
+	}
 	///////Display scores and cards under canvas
 
 	//Displays remaining health of player's and enemy's wall
@@ -225,22 +237,32 @@ function trackPlayerCannonballs() {
 				cannonballs.splice(i, 1);
 				}
 			//Detect each Cannonbal for defender collision
-			if (cannonballs[i][0] + cannonballSize > Defender1.xpos && (cannonballs[i][0]) < Defender1.xpos + Defender1.width && cannonballs[i][1] < Defender1.ypos + Defender1.height && cannonballs[i][1] + cannonballSize > Defender1.ypos ) {
-					cannonballs.splice(i, 1);
-					Defender1.health += basicCannonballDamage;
-				}
-			if (cannonballs[i][0] + cannonballSize > Defender2.xpos && (cannonballs[i][0]) < Defender2.xpos + Defender2.width && cannonballs[i][1] < Defender2.ypos + Defender2.height && cannonballs[i][1] + cannonballSize > Defender2.ypos ) {
-					cannonballs.splice(i, 1);
-					Defender2.health += basicCannonballDamage;
-				}
-			if (cannonballs[i][0] + cannonballSize > Defender3.xpos && (cannonballs[i][0]) < Defender3.xpos + Defender3.width && cannonballs[i][1] < Defender3.ypos + Defender3.height && cannonballs[i][1] + cannonballSize > Defender3.ypos ) {
-					cannonballs.splice(i, 1);
-					Defender3.health += basicCannonballDamage;
-				}
-			if (cannonballs[i][0] + cannonballSize > Defender4.xpos && (cannonballs[i][0]) < Defender4.xpos + Defender4.width && cannonballs[i][1] < Defender4.ypos + Defender4.height && cannonballs[i][1] + cannonballSize > Defender4.ypos ) {
-					cannonballs.splice(i, 1);
-					Defender4.health += basicCannonballDamage;
-				}
+			for (var d = 0; d < defenders.length; d++) {
+				if (cannonballs[i][0] + cannonballSize >= defenders[d].xpos && (cannonballs[i][0]) <= defenders[d].xpos + defenders[d].width && cannonballs[i][1] <= defenders[d].ypos + defenders[d].height && cannonballs[i][1] + cannonballSize >= defenders[d].ypos ) {
+						cannonballs.splice(i, 1);
+						defenders[d].health += basicCannonballDamage;
+					}				
+			}
+			// if (cannonballs[i][0] + cannonballSize >= Defender1.xpos && (cannonballs[i][0]) <= Defender1.xpos + Defender1.width && cannonballs[i][1] <= Defender1.ypos + Defender1.height && cannonballs[i][1] + cannonballSize >= Defender1.ypos ) {
+			// 		cannonballs.splice(i, 1);
+			// 		Defender1.health += basicCannonballDamage;
+			// 	}
+			// if (cannonballs[i][0] + cannonballSize >= Defender2.xpos && (cannonballs[i][0]) <= Defender2.xpos + Defender2.width && cannonballs[i][1] <= Defender2.ypos + Defender2.height && cannonballs[i][1] + cannonballSize >= Defender2.ypos ) {
+			// 		cannonballs.splice(i, 1);
+			// 		Defender2.health += basicCannonballDamage;
+			// 	}
+			// if (cannonballs[i][0] + cannonballSize >= Defender3.xpos && (cannonballs[i][0]) <= Defender3.xpos + Defender3.width && cannonballs[i][1] <= Defender3.ypos + Defender3.height && cannonballs[i][1] + cannonballSize >= Defender3.ypos ) {
+			// 		cannonballs.splice(i, 1);
+			// 		Defender3.health += basicCannonballDamage;
+			// 	}
+			// if (cannonballs[i][0] + cannonballSize >= Defender4.xpos && (cannonballs[i][0]) <= Defender4.xpos + Defender4.width && cannonballs[i][1] <= Defender4.ypos + Defender4.height && cannonballs[i][1] + cannonballSize >= Defender4.ypos ) {
+			// 		cannonballs.splice(i, 1);
+			// 		Defender4.health += basicCannonballDamage;
+			// 	}
+			// if (cannonballs[i][0] + cannonballSize >= Defender5.xpos && (cannonballs[i][0]) <= Defender5.xpos + Defender5.width && cannonballs[i][1] <= Defender5.ypos + Defender5.height && cannonballs[i][1] + cannonballSize >= Defender5.ypos ) {
+			// 		cannonballs.splice(i, 1);
+			// 		Defender5.health += basicCannonballDamage;
+			// 	}
 			// for (var x = 0; x < defenders.length; x++) {
 			// 	if(cannonballs[i][x] + cannonballSize > defenders[x].xpos) {
 
