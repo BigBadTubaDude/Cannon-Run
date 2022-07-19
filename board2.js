@@ -1,12 +1,64 @@
 var canvas, context;
 canvas = document.getElementById('gameBoard');
 context = canvas.getContext("2d");
-canvas.width = 1450
-canvas.height = 480
+canvas.width = 1550
+canvas.height = 500
 canvas.style.background = "rgb(125,75,125)";
 setInterval(gameLoop, 1000/60) //Redraws at 60 fps
 
 
+//Arrays used to keep track of each type of projectile. Each item is an array with at least 2 items as x and y coordinates. Additional array items are noted
+var cannonballs = [];
+var enemyShots = [];
+var defenders = []
+class Defender {
+	constructor(xpos, ypos,yMaxRange, yMinRange, width, height, color, speed, health, ally, goingUp, topDefender, bottomDefender) { 
+		//bottomOfOther is true if this defender shares a space with another defender above this one. topOfOther is the oppposite. 
+		//topDefender and bottomDefender are the defenders to the top or bottom of this one, "none" if not applicable
+		this.xpos = xpos;
+		this.ypos = ypos;
+		this.yMaxRange = yMaxRange;
+		this.yMinRange = yMinRange;
+		this.width = width;
+		this.height = height;
+		this.color = color;
+		this.speed = speed;
+		this.health = health;
+		this.ally = ally;
+		this.goingUp = goingUp;
+		this.topDefender = topDefender;
+		this.bottomDefender = bottomDefender;
+		}
+	list() {
+		defenders.push(this);
+	}
+	create(context) {
+			context.fillStyle = this.color;
+			context.fillRect(this.xpos, this.ypos, this.width, this.height);
+		}
+	move() { 
+
+		if (this.topDefender != "none") {
+			this.yMaxRange = this.topDefender.ypos + this.topDefender.height;
+		}
+		if (this.bottomDefender != "none") {
+			this.yMinRange = this.bottomDefender.ypos;			
+		}
+
+
+		if (this.goingUp){
+			this.ypos -= this.speed;
+			if (this.ypos <= this.yMaxRange) //swaps direction if at outer range
+				this.goingUp = !this.goingUp;
+			}
+		else {
+			this.ypos += this.speed;
+			if (this.ypos + this.height >= this.yMinRange) {//swaps direction if at outer range
+				this.goingUp = !this.goingUp;
+				}
+			}
+		}
+}
 
 var canvasWidth = canvas.width;
 var canvasHeight = canvas.height;
@@ -23,43 +75,52 @@ var enemyWallWidth = 100;
 var enemyWallXPos = canvasWidth - enemyWallWidth;
 var enemyWallColor = "rgb(30, 110,30)"
 
-//Enemy Defender stats
+///////////////////Enemy Defender stats
 var defenderColor = "green"
 var defenderGap = 100;
 var defenderWidth = 20;
-//Defender1 (closest to enemy wall)
+//////Defender1 (closest to enemy wall)x level 3 middle
 var defender1Xpos = canvasWidth - enemyWallWidth - defenderGap - defenderWidth;
 var defender1Ypos = 30;
-var defender1YTopRange = 30;
-var defender1YBottomRange = canvasHeight - 30;
+var defender1YTopRange = 35;
+var defender1YBottomRange = canvasHeight - 35;
 var defender1Health = 400;
 var defender1Height = 300;
 var defender1Speed = 1;
-//Defender2
-var defender2Xpos = canvasWidth - enemyWallWidth - (defenderGap * 2) - (defenderWidth * 2);
-var defender2Ypos = 150;
-var defender2YTopRange = 10;
-var defender2YBottomRange = canvasHeight - 10;
-var defender2Health = 300;
-var defender2Height = 200;
-var defender2Speed = 3;
-//Defender3
-var defender3Xpos = canvasWidth - enemyWallWidth - (defenderGap * 3) - (defenderWidth * 3);
-var defender3Ypos = 150;
-var defender3YTopRange = 50;
-var defender3YBottomRange = canvasHeight - 10;
-var defender3Health = 200;
-var defender3Height = 100;
-var defender3Speed = 6;
-//Defender4
-var defender4Xpos = canvasWidth - enemyWallWidth - (defenderGap * 4) - (defenderWidth * 4) + 60;
-var defender4Ypos = 10;
+var defender1Color = "rgb(240,240,240,0.9)"
+var defender1TopDefender = "none";
+var defender1BottomDefender = "none";
+//////Defender2 level 3 low defender
+var defender2Height = 20;
+var defender2Xpos = canvasWidth - enemyWallWidth - defenderGap - defenderWidth;
+var defender2Ypos = canvasHeight - defender2Height; 
+var defender2YTopRange = 40; // Will change depending on current Defender1 possition
+var defender2YBottomRange = canvasHeight;
+var defender2Health = 250;
+var defender2Speed = 3.5;
+var defender2TopDefender = "none";
+var defender2BottomDefender = "none";
+//////Defender3 level 3 high defender
+var defender3Height = 20;
+var defender3Xpos = canvasWidth - enemyWallWidth - defenderGap - defenderWidth;
+var defender3Ypos = 0;
+var defender3YTopRange = 0;
+var defender3YBottomRange = canvasWidth; // Will change depending on current Defender1 possition
+var defender3Health = 250;
+var defender3Speed = 3;
+var defender3TopDefender = "none";
+var defender3BottomDefender = "none";
+//////Defender4 x level 2 middle
+var defender4Xpos = canvasWidth - enemyWallWidth - (defenderGap * 2) - (defenderWidth * 2);
+var defender4Ypos = 150;
 var defender4YTopRange = 10;
-var defender4YBottomRange = canvasHeight - 50;
-var defender4Health = 200;
-var defender4Height = 100;
-var defender4Speed = 7;
-//Defender5
+var defender4YBottomRange = canvasHeight - 10;
+var defender4Health = 300;
+var defender4Height = 200;
+var defender4Speed = 3;
+var defender4TopDefender = "none";
+var defender4BottomDefender = "none";
+//////Defender5
 var defender5Xpos = canvasWidth - enemyWallWidth - (defenderGap * 5) - (defenderWidth * 5) + 120;
 var defender5Ypos = 10;
 var defender5YTopRange = 10;
@@ -67,6 +128,60 @@ var defender5YBottomRange = canvasHeight - 10;
 var defender5Health = 200;
 var defender5Height = 100;
 var defender5Speed = 7;
+var defender5TopDefender = "none";
+var defender5BottomDefender = "none";
+//////Defender6
+var defender6Xpos = canvasWidth - enemyWallWidth - (defenderGap * 4) - (defenderWidth * 4) + 60;
+var defender6Ypos = 10;
+var defender6YTopRange = 10;
+var defender6YBottomRange = canvasHeight - 50;
+var defender6Health = 200;
+var defender6Height = 100;
+var defender6Speed = 7;
+var defender6TopDefender = "none";
+var defender6BottomDefender = "none";
+//////Defender7x
+var defender7Xpos = canvasWidth - enemyWallWidth - (defenderGap * 3) - (defenderWidth * 3);
+var defender7Ypos = 150;
+var defender7YTopRange = 70;
+var defender7YBottomRange = canvasHeight - 30;
+var defender7Health = 250;
+var defender7Height = 100;
+var defender7Speed = 6;
+var defender7TopDefender = "none";
+var defender7BottomDefender = "none";
+//////Defender8x
+var defender8Xpos = canvasWidth - enemyWallWidth - (defenderGap * 4) - (defenderWidth * 4) + 60;
+var defender8Ypos = 10;
+var defender8YTopRange = 30;
+var defender8YBottomRange = canvasHeight - 70;
+var defender8Health = 250;
+var defender8Height = 100;
+var defender8Speed = 7;
+var defender8TopDefender = "none";
+var defender8BottomDefender = "none";
+//////Defender9x
+var defender9Xpos = canvasWidth - enemyWallWidth - (defenderGap * 5) - (defenderWidth * 5) + 130;
+var defender9Ypos = 10;
+var defender9YTopRange = 0;
+var defender9YBottomRange = canvasHeight - 0;
+var defender9Health = 250;
+var defender9Height = 100;
+var defender9Speed = 8;
+var defender9TopDefender = "none";
+var defender9BottomDefender = "none";
+//////Defender10x
+var defender10Xpos = canvasWidth - enemyWallWidth - (defenderGap * 6) - (defenderWidth * 6) + 170;
+var defender10Ypos = canvasHeight - 10;
+var defender10YTopRange = 25;
+var defender10YBottomRange = canvasHeight - 25;
+var defender10Health = 250;
+var defender10Height = 100;
+var defender10Speed = 9;
+var defender10TopDefender = "none";
+var defender10BottomDefender = "none";
+
+
 
 var playerPoints = 0;
 var playerMoveSpeed = 5;
@@ -77,12 +192,12 @@ var playerYPos = (canvasHeight / 2) - (playerHeight / 2); //Middle of canvas
 var playerColor = "rgb(240,60,70)"
 
 //Basic Cannonball variables
-var cannonballSize = 28;
+var cannonballSize = 30;
 var playerCannonballColor = "black";
-var playerCannonballspeed = 6;
-var shootInterval = 25 ; //Number of frames before player can shoot again. EX. At 60 fps, 30 frames would be half a second.
+var playerCannonballspeed = 4;
+var shootInterval = 40 ; //Number of frames before player can shoot again. EX. At 60 fps, 30 frames would be half a second.
 var framesElapsedSinceShot = 0; // Frames since last player generated Cannonball
-var basicCannonballDamage = -10; 
+var basicCannonballDamage = -20; 
 
 
 
@@ -92,64 +207,40 @@ var spaceKeyPress = false;
 var upKeyPress = false;
 var downKeyPress = false;
 
-//Arrays used to keep track of each type of projectile. Each item is an array with at least 2 items as x and y coordinates. Additional array items are noted
-var cannonballs = [];
-var enemyShots = [];
-var defenders = []
+
 
 //ally is a boolean. true if on player's team
 //goingUp is a boolean that tells if defender is going up or down. Boolean is swapped once it reaches the outer range
-class Defender {
-	constructor(xpos, ypos,yMaxRange, yMinRange, width, height, color, speed, health, ally, goingUp) { 
-		this.xpos = xpos;
-		this.ypos = ypos;
-		this.yMaxRange = yMaxRange;
-		this.yMinRange = yMinRange;
-		this.width = width;
-		this.height = height;
-		this.color = color;
-		this.speed = speed;
-		this.health = health;
-		this.ally = ally;
-		this.goingUp = goingUp;
-		}
-	list() {
-		defenders.push(this);
-	}
-	create(context) {
-			context.fillStyle = this.color;
-			context.fillRect(this.xpos, this.ypos, this.width, this.height);
-		}
-	move() {
-		if (this.goingUp){
-			this.ypos -= this.speed;
-			if (this.ypos <= this.yMaxRange) //swaps direction if at outer range
-				this.goingUp = !this.goingUp;
-			}
-		else {
-			this.ypos += this.speed;
-			if (this.ypos + this.height >= this.yMinRange) {//swaps direction if at outer range
-				this.goingUp = !this.goingUp;
-				}
-			}
-		}
-}
+
 //Create defenders and add them to defenders array
-var Defender1 = new Defender(defender1Xpos, defender1Ypos, defender1YTopRange, defender1YBottomRange, defenderWidth,defender1Height,defenderColor,defender1Speed,defender1Health,true,true)
-Defender1.create(context);
+// function getDefender1Bottom() {
+// 	return Defender1.ypos + Defender1.height;
+// }
+// function getDefender1Top() {
+// 	return Defender1.ypos;
+// }
+var Defender1 = new Defender(defender1Xpos, defender1Ypos, defender1YTopRange, defender1YBottomRange, defenderWidth,defender1Height,defender1Color,defender1Speed,defender1Health,true,true, defender1TopDefender, defender1BottomDefender)
 Defender1.list();
-var Defender2 = new Defender(defender2Xpos, defender2Ypos, defender2YTopRange, defender2YBottomRange, defenderWidth,defender2Height,defenderColor,defender2Speed,defender2Health,true,true)
-Defender2.create(context);
+var Defender2 = new Defender(defender2Xpos, defender2Ypos, defender2YTopRange, defender2YBottomRange, defenderWidth,defender2Height,defenderColor,defender2Speed,defender2Health,true,true, defender2TopDefender, defender2BottomDefender)
 Defender2.list();
-var Defender3 = new Defender(defender3Xpos, defender3Ypos, defender3YTopRange, defender3YBottomRange, defenderWidth,defender3Height,defenderColor,defender3Speed,defender3Health,true,true)
-Defender3.create(context);
+var Defender3 = new Defender(defender3Xpos, defender3Ypos, defender3YTopRange, defender3YBottomRange, defenderWidth,defender3Height,defenderColor,defender3Speed,defender3Health,true,true, defender3TopDefender, defender3BottomDefender)
 Defender3.list();
-var Defender4 = new Defender(defender4Xpos, defender4Ypos, defender4YTopRange, defender4YBottomRange, defenderWidth,defender4Height,defenderColor,defender4Speed,defender4Health,true,true)
-Defender4.create(context);
+var Defender4 = new Defender(defender4Xpos, defender4Ypos, defender4YTopRange, defender4YBottomRange, defenderWidth,defender4Height,defenderColor,defender4Speed,defender4Health,true,true, defender4TopDefender, defender4BottomDefender)
 Defender4.list();
-var Defender5 = new Defender(defender5Xpos, defender5Ypos, defender5YTopRange, defender5YBottomRange, defenderWidth,defender5Height,defenderColor,defender5Speed,defender5Health,true,true)
-Defender5.create(context);
+var Defender5 = new Defender(defender5Xpos, defender5Ypos, defender5YTopRange, defender5YBottomRange, defenderWidth,defender5Height,defenderColor,defender5Speed,defender5Health,true,true, defender5TopDefender, defender5BottomDefender)
 Defender5.list();
+var Defender6 = new Defender(defender6Xpos, defender6Ypos, defender6YTopRange, defender6YBottomRange, defenderWidth,defender6Height,defenderColor,defender6Speed,defender6Health,true,true, defender6TopDefender, defender6BottomDefender)
+Defender6.list();
+var Defender7 = new Defender(defender7Xpos, defender7Ypos, defender7YTopRange, defender7YBottomRange, defenderWidth,defender7Height,defenderColor,defender7Speed,defender7Health,true,true, defender7TopDefender, defender7BottomDefender)
+Defender7.list();
+var Defender8 = new Defender(defender8Xpos, defender8Ypos, defender8YTopRange, defender8YBottomRange, defenderWidth,defender8Height,defenderColor,defender8Speed,defender8Health,true,true, defender8TopDefender, defender8BottomDefender)
+Defender8.list();
+var Defender9 = new Defender(defender9Xpos, defender9Ypos, defender9YTopRange, defender9YBottomRange, defenderWidth,defender9Height,defenderColor,defender9Speed,defender9Health,true,true, defender9TopDefender, defender9BottomDefender)
+Defender9.list();
+var Defender10 = new Defender(defender10Xpos, defender10Ypos, defender10YTopRange, defender10YBottomRange, defenderWidth,defender10Height,defenderColor,defender10Speed,defender10Health,true,true, defender10TopDefender, defender10BottomDefender)
+Defender10.list();
+Defender2.topDefender = Defender1;
+Defender3.bottomDefender = Defender1;
 
 
 //Run Game
@@ -170,15 +261,7 @@ function gameLoop() {
 	createWall(enemyWallXPos, 0, enemyWallWidth, canvasHeight, enemyWallColor)
 
 	//Create Defenders
-	for (var i = 0; i < defenders.length; i++) {
-		if (defenders[i].health > 0) {
-			defenders[i].create(context);
-			defenders[i].move();
-		}
-		else {
-			defenders.splice(i,1);
-		}
-	}
+	drawMoveHealthCheckDefenders()
 	///////Display scores and cards under canvas
 
 	//Displays remaining health of player's and enemy's wall
@@ -191,13 +274,24 @@ function gameLoop() {
 
 
 ////////////Functions
+
+
 //Create and display Functions
 function createWall(xpos,ypos,width, height, color) {
 	context.fillStyle = color;
 	context.fillRect(xpos, ypos, width, height);	
 }
-
-
+function drawMoveHealthCheckDefenders() {
+	for (var i = 0; i < defenders.length; i++) {
+		if (defenders[i].health > 0) {
+			defenders[i].create(context);
+			defenders[i].move();
+		}
+		else {
+			defenders.splice(i,1);
+		}
+	}
+}
 function displayStats() { // Displays current health of both walls
 	document.getElementById('playerHealth').innerHTML = WallHealth + " Wall HP";
 	document.getElementById('enemyHealth').innerHTML = EnemyWallHealth + " Wall HP";
@@ -236,42 +330,16 @@ function trackPlayerCannonballs() {
 				EnemyWallHealth += basicCannonballDamage;
 				cannonballs.splice(i, 1);
 				}
-			//Detect each Cannonbal for defender collision
-			for (var d = 0; d < defenders.length; d++) {
-				if (cannonballs[i][0] + cannonballSize >= defenders[d].xpos && (cannonballs[i][0]) <= defenders[d].xpos + defenders[d].width && cannonballs[i][1] <= defenders[d].ypos + defenders[d].height && cannonballs[i][1] + cannonballSize >= defenders[d].ypos ) {
-						cannonballs.splice(i, 1);
-						defenders[d].health += basicCannonballDamage;
+			else {
+				for (var d = 0; d < defenders.length; d++) {
+					if (cannonballs[i][0] + cannonballSize >= defenders[d].xpos && (cannonballs[i][0]) <= defenders[d].xpos + defenders[d].width && cannonballs[i][1] <= defenders[d].ypos + defenders[d].height && cannonballs[i][1] + cannonballSize >= defenders[d].ypos ) {
+							cannonballs.splice(i, 1);
+							defenders[d].health += basicCannonballDamage;
+						}				
 					}				
-			}
-			// if (cannonballs[i][0] + cannonballSize >= Defender1.xpos && (cannonballs[i][0]) <= Defender1.xpos + Defender1.width && cannonballs[i][1] <= Defender1.ypos + Defender1.height && cannonballs[i][1] + cannonballSize >= Defender1.ypos ) {
-			// 		cannonballs.splice(i, 1);
-			// 		Defender1.health += basicCannonballDamage;
-			// 	}
-			// if (cannonballs[i][0] + cannonballSize >= Defender2.xpos && (cannonballs[i][0]) <= Defender2.xpos + Defender2.width && cannonballs[i][1] <= Defender2.ypos + Defender2.height && cannonballs[i][1] + cannonballSize >= Defender2.ypos ) {
-			// 		cannonballs.splice(i, 1);
-			// 		Defender2.health += basicCannonballDamage;
-			// 	}
-			// if (cannonballs[i][0] + cannonballSize >= Defender3.xpos && (cannonballs[i][0]) <= Defender3.xpos + Defender3.width && cannonballs[i][1] <= Defender3.ypos + Defender3.height && cannonballs[i][1] + cannonballSize >= Defender3.ypos ) {
-			// 		cannonballs.splice(i, 1);
-			// 		Defender3.health += basicCannonballDamage;
-			// 	}
-			// if (cannonballs[i][0] + cannonballSize >= Defender4.xpos && (cannonballs[i][0]) <= Defender4.xpos + Defender4.width && cannonballs[i][1] <= Defender4.ypos + Defender4.height && cannonballs[i][1] + cannonballSize >= Defender4.ypos ) {
-			// 		cannonballs.splice(i, 1);
-			// 		Defender4.health += basicCannonballDamage;
-			// 	}
-			// if (cannonballs[i][0] + cannonballSize >= Defender5.xpos && (cannonballs[i][0]) <= Defender5.xpos + Defender5.width && cannonballs[i][1] <= Defender5.ypos + Defender5.height && cannonballs[i][1] + cannonballSize >= Defender5.ypos ) {
-			// 		cannonballs.splice(i, 1);
-			// 		Defender5.health += basicCannonballDamage;
-			// 	}
-			// for (var x = 0; x < defenders.length; x++) {
-			// 	if(cannonballs[i][x] + cannonballSize > defenders[x].xpos) {
+				}
+			//Detect each Cannonbal for defender collision
 
-			// 		cannonballs.splice(i, 1);
-
-			// 		defenders[x].health += basicCannonballDamage;
-
-			// 		}
-			// 	}
 			}
 		}
 
