@@ -16,7 +16,7 @@ var level2Defenders = [];
 var level3Defenders = [];
 
 class Defender {
-	constructor(xpos, ypos,yMaxRange, yMinRange, width, height, color, speed, health, ally, goingUp, topDefender, bottomDefender, levelArray) { 
+	constructor(xpos, ypos,yMaxRange, yMinRange, width, height, color, speed, health, ally, goingUp, topDefender, bottomDefender, levelArray, chanceOfShooting) { 
 		//bottomOfOther is true if this defender shares a space with another defender above this one. topOfOther is the oppposite. 
 		//topDefender and bottomDefender are the defenders to the top or bottom of this one, "none" if not applicable
 		this.xpos = xpos;
@@ -32,27 +32,35 @@ class Defender {
 		this.goingUp = goingUp;
 		this.topDefender = topDefender;
 		this.bottomDefender = bottomDefender;
-		this.level = level;
+		this.levelArray = levelArray;
+		this.chance = chanceOfShooting;
 		}
 	canShoot() {
-		if (this.levelArray == level1Defenders && this.health > 0) {
+		let canShoot = false;
+		if (this.levelArray == level1Defenders && this.health > 0 && Math.random() > this.chance) {
 			canShoot = true;
 			}
-		if (this.levelArray = level2Defenders && this.health > 0 && level1Defenders.length == 0){
-			canShoot = true
+		else if (level1Defenders.length == 0 && this.levelArray == level2Defenders && this.health > 0 && Math.random() > this.chance){
+			canShoot = true;
 			}
-		if (this.levelArray = level3Defenders && this.health > 0 && level2Defenders.length == 0){
-			canShoot = true
+		else if (level2Defenders.length == 0 && this.levelArray == level3Defenders && this.health > 0 && Math.random() > this.chance){
+			canShoot = true;
 			}
 		return canShoot;
 	}
+	shoot() {
+		if (canShoot) {
+			}
+	}
 	list() {
 		defenders.push(this);
+		this.levelArray.push(this);
 	}
 	create(context) {
 			context.fillStyle = this.color;
 			context.fillRect(this.xpos, this.ypos, this.width, this.height);
 		}
+
 	move() { 
 
 		if (this.topDefender != "none") {
@@ -99,6 +107,11 @@ var defenderWidth = 20;
 var middleDefenderColor = "rgb(10,10,10)";
 var outerDefenderColor = "green";
 var level1DefenderColor = "red";
+var level1ChanceOfShooting = 0.2;
+var middleLevel3ChanceOfShooting = 0.02;
+var outerLevel3ChanceOfShooting = 0.09;
+var middleLevel2ChanceOfShooting = 0.1;
+var outerLevel2ChanceOfShooting = 0.3;
 //////Defender1 (closest to enemy wall)x level 3 middle
 var defender1Xpos = canvasWidth - enemyWallWidth - defenderGap - defenderWidth;
 var defender1Ypos = 30;
@@ -252,25 +265,29 @@ var downKeyPress = false;
 // function getDefender1Top() {
 // 	return Defender1.ypos;
 // }
-var Defender1 = new Defender(defender1Xpos, defender1Ypos, defender1YTopRange, defender1YBottomRange, defenderWidth,defender1Height,defender1Color,defender1Speed,defender1Health,true,true, defender1TopDefender, defender1BottomDefender)
+middleLevel3ChanceOfShooting = 0.02;
+outerLevel3ChanceOfShooting = 0.09;
+middleLevel2ChanceOfShooting = 0.1;
+outerLevel2ChanceOfShooting = 0.3;
+var Defender1 = new Defender(defender1Xpos, defender1Ypos, defender1YTopRange, defender1YBottomRange, defenderWidth,defender1Height,defender1Color,defender1Speed,defender1Health,true,true, defender1TopDefender, defender1BottomDefender, level3Defenders, middleLevel3ChanceOfShooting);
 Defender1.list();
-var Defender2 = new Defender(defender2Xpos, defender2Ypos, defender2YTopRange, defender2YBottomRange, defenderWidth,defender2Height,defender2Color,defender2Speed,defender2Health,true,true, defender2TopDefender, defender2BottomDefender)
+var Defender2 = new Defender(defender2Xpos, defender2Ypos, defender2YTopRange, defender2YBottomRange, defenderWidth,defender2Height,defender2Color,defender2Speed,defender2Health,true,true, defender2TopDefender, defender2BottomDefender, level3Defenders, outerLevel3ChanceOfShooting);
 Defender2.list();
-var Defender3 = new Defender(defender3Xpos, defender3Ypos, defender3YTopRange, defender3YBottomRange, defenderWidth,defender3Height,defender3Color,defender3Speed,defender3Health,true,true, defender3TopDefender, defender3BottomDefender)
+var Defender3 = new Defender(defender3Xpos, defender3Ypos, defender3YTopRange, defender3YBottomRange, defenderWidth,defender3Height,defender3Color,defender3Speed,defender3Health,true,true, defender3TopDefender, defender3BottomDefender, level3Defenders, outerLevel3ChanceOfShooting);
 Defender3.list();
-var Defender4 = new Defender(defender4Xpos, defender4Ypos, defender4YTopRange, defender4YBottomRange, defenderWidth,defender4Height,defender4Color,defender4Speed,defender4Health,true,true, defender4TopDefender, defender4BottomDefender)
+var Defender4 = new Defender(defender4Xpos, defender4Ypos, defender4YTopRange, defender4YBottomRange, defenderWidth,defender4Height,defender4Color,defender4Speed,defender4Health,true,true, defender4TopDefender, defender4BottomDefender, level2Defenders, middleLevel2ChanceOfShooting);
 Defender4.list();
-var Defender5 = new Defender(defender5Xpos, defender5Ypos, defender5YTopRange, defender5YBottomRange, defender5Width,defender5Height,defender5Color,defender5Speed,defender5Health,true,true, defender5TopDefender, defender5BottomDefender)
+var Defender5 = new Defender(defender5Xpos, defender5Ypos, defender5YTopRange, defender5YBottomRange, defender5Width,defender5Height,defender5Color,defender5Speed,defender5Health,true,true, defender5TopDefender, defender5BottomDefender, level2Defenders, outerLevel2ChanceOfShooting);
 Defender5.list();
-var Defender6 = new Defender(defender6Xpos, defender6Ypos, defender6YTopRange, defender6YBottomRange, defender6Width,defender6Height,defender6Color,defender6Speed,defender6Health,true,true, defender6TopDefender, defender6BottomDefender)
+var Defender6 = new Defender(defender6Xpos, defender6Ypos, defender6YTopRange, defender6YBottomRange, defender6Width,defender6Height,defender6Color,defender6Speed,defender6Health,true,true, defender6TopDefender, defender6BottomDefender, level2Defenders, outerLevel2ChanceOfShooting);
 Defender6.list();
-var Defender7 = new Defender(defender7Xpos, defender7Ypos, defender7YTopRange, defender7YBottomRange, defenderWidth,defender7Height,defender7Color,defender7Speed,defender7Health,true,true, defender7TopDefender, defender7BottomDefender)
+var Defender7 = new Defender(defender7Xpos, defender7Ypos, defender7YTopRange, defender7YBottomRange, defenderWidth,defender7Height,defender7Color,defender7Speed,defender7Health,true,true, defender7TopDefender, defender7BottomDefender, level1Defenders, level1ChanceOfShooting);
 Defender7.list();
-var Defender8 = new Defender(defender8Xpos, defender8Ypos, defender8YTopRange, defender8YBottomRange, defenderWidth,defender8Height,defender8Color,defender8Speed,defender8Health,true,true, defender8TopDefender, defender8BottomDefender)
+var Defender8 = new Defender(defender8Xpos, defender8Ypos, defender8YTopRange, defender8YBottomRange, defenderWidth,defender8Height,defender8Color,defender8Speed,defender8Health,true,true, defender8TopDefender, defender8BottomDefender, level1Defenders, level1ChanceOfShooting);
 Defender8.list();
-var Defender9 = new Defender(defender9Xpos, defender9Ypos, defender9YTopRange, defender9YBottomRange, defenderWidth,defender9Height,defender9Color,defender9Speed,defender9Health,true,true, defender9TopDefender, defender9BottomDefender)
+var Defender9 = new Defender(defender9Xpos, defender9Ypos, defender9YTopRange, defender9YBottomRange, defenderWidth,defender9Height,defender9Color,defender9Speed,defender9Health,true,true, defender9TopDefender, defender9BottomDefender, level1Defenders, level1ChanceOfShooting);
 Defender9.list();
-var Defender10 = new Defender(defender10Xpos, defender10Ypos, defender10YTopRange, defender10YBottomRange, defenderWidth,defender10Height,defender10Color,defender10Speed,defender10Health,true,true, defender10TopDefender, defender10BottomDefender)
+var Defender10 = new Defender(defender10Xpos, defender10Ypos, defender10YTopRange, defender10YBottomRange, defenderWidth,defender10Height,defender10Color,defender10Speed,defender10Health,true,true, defender10TopDefender, defender10BottomDefender, level1Defenders, level1ChanceOfShooting);
 Defender10.list();
 
 //Assigns defenders which defender to look when calculating max or min range of motion
