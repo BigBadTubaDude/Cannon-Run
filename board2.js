@@ -36,7 +36,7 @@ class Defender {
 		this.bottomDefender = bottomDefender;
 		this.levelArray = levelArray;
 		this.chance = chanceOfShooting;
-		this.listOfBullets = [];
+		this.listOfBullets = []; //keeps track of bullets this Defender has shot
 		if (levelArray == level1Defenders) {
 			this.bulletX = 0;
 			this.bulletY = 0;
@@ -348,7 +348,9 @@ function gameLoop() {
 	//Creates player's and enemy's wall
 	createWall(WallXPos, 0, WallWidth, canvasHeight, WallColor)
 	createWall(enemyWallXPos, 0, enemyWallWidth, canvasHeight, enemyWallColor)
-
+	//Manages movement of players and projectiles
+	makeMovementSmooth();
+	trackPlayerCannonballs();
 	//Create Defenders
 	drawMoveShootHealthCheckDefenders()
 	///////Display scores and cards under canvas
@@ -356,9 +358,7 @@ function gameLoop() {
 	//Displays remaining health of player's and enemy's wall
 	displayStats();
 
-	//Manages movement of players and projectiles
-	makeMovementSmooth();
-	trackPlayerCannonballs();
+
 	}
 
 
@@ -397,11 +397,11 @@ function createPlayer(xpos,ypos,width, height, color){
 
 //Cannonball Functions
 function createCannonball(playerX, playerY, cannonballHitsCanTake) {
-	cannonballs.push([playerX,playerY,cannonballHitsCanTake]);
+	cannonballs.push([playerX,playerY + (playerHeight * 0.5) - (cannonballSize * 0.5),cannonballHitsCanTake]);
 	}
 function drawCannonball(xpos, ypos, width, height, color) {
 	context.fillStyle = color;
-	context.fillRect(xpos, ypos + (playerHeight * 0.5) - (cannonballSize * 0.5), width, height); //This math centers the Cannonball in the players platform
+	context.fillRect(xpos, ypos, width, height); //This math centers the Cannonball in the players platform
 	}
 function trackPlayerCannonballs() {
 	//Increments frames since last shot
@@ -435,9 +435,8 @@ function trackPlayerCannonballs() {
 								//Checks if cannonball and bullet collide. if so, deduct hit point from cannonball, remove bullet, and add points to player
 								cannonballs[i][2] -= 1;
 								defenders[d].listOfBullets.splice(b, 1);
-
 								playerPoints += pointsForLevelOneBulletHit;
-								if (cannonballs[i][2] == 0) { //If cannonball has been hit enough times, remove cannonbal
+								if (cannonballs[i][2] == 0) { //If cannonball has been hit enough times, remove cannonball
 									cannonballs.splice(i, 1);
 									}
 								}
