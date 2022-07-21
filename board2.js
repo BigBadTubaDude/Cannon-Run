@@ -120,7 +120,7 @@ class Defender {
 			this.listOfBullets[i][0] -= this.XTrajectory;
 			this.listOfBullets[i][1] -= this.YTrajectory;
 			if (detectCollision(this.listOfBullets[i][0],this.listOfBullets[i][1],this.listOfBullets[i][2],this.listOfBullets[i][3],playerX,playerY,playerWidth,playerHeight)) {
-				//Detects collision with player
+				//Detects collision with player 
 				playerPoints += 5;
 				this.listOfBullets.splice(i,1);
 				}
@@ -141,9 +141,6 @@ class Defender {
 		defenders.push(this);
 		this.levelArray.push(this);
 	}
-	create(context) {
-
-		}
 
 	move() { 
 
@@ -295,7 +292,9 @@ var defender6TopDefender = "none";
 var defender6BottomDefender = "none";
 var defender6Color = outerDefenderColor;
 
-//////Defender7 Level 3
+//////////////////Level 1 Defenders
+var level1BulletPoints = 4;
+//////Defender7 
 var defender7Xpos = canvasWidth - enemyWallWidth - (defenderGap * 3) - (defenderWidth * 3);
 var defender7Ypos = 150;
 var defender7YTopRange = 70;
@@ -351,7 +350,7 @@ var barrierWidth = 5;
 var barrier1XPos = defender7Xpos + 50;
 var barrier1Color = "grey";
 //Barrier2
-var barrier2XPos = defender1Xpos + 50;
+var barrier2XPos = defender4Xpos + 50;
 var barrier2Color = "grey";
 
 
@@ -427,15 +426,14 @@ function gameLoop() {
 	drawBarriers(barriers, level1Defenders, level2Defenders);
 	//Manages movement of players and projectiles
 	makeMovementSmooth();
-	trackPlayerCannonballs(defenders, cannonballs, cannonballSize, cannonballHitsCanTake, playerPoints, barriers);
+	trackPlayerCannonballs(defenders, cannonballs, cannonballSize, cannonballHitsCanTake, barriers, canvasHeight, playerPoints);
 	//Create Defenders
-	drawMoveShootHealthCheckDefenders()
+	drawMoveShootHealthCheckDefenders(level1Defenders, level2Defenders);
+	removeDefendersAndBarriers(level1Defenders, level2Defenders, level3Defenders, barriers);
 	///////Display scores and cards under canvas
 
 	//Displays remaining health of player's and enemy's wall
 	displayStats();
-
-
 	}
 
 
@@ -450,20 +448,40 @@ function drawBarriers(barriers, level1Defenders, level2Defenders) {
 		}
 	}
 
+
 //Create and display Functions
 function createWall(xpos,ypos,width, height, color) {
 	context.fillStyle = color;
 	context.fillRect(xpos, ypos, width, height);	
 }
-function drawMoveShootHealthCheckDefenders() {
-	for (var i = 0; i < defenders.length; i++) {
-		if (defenders[i].health > 0) {
-			defenders[i].move();
-			defenders[i].shoot();
-			defenders[i].moveBullets(context, playerXPos, playerYPos, playerWidth, playerHeight, cannonballs, cannonballSize);
+function removeDefendersAndBarriers(level1Defenders, level2Defenders, level3Defenders, barriers) {
+	for (var bar = 0; bar < level1Defenders.length; bar++) {
+		if (level1Defenders[bar].health <= 0) {
+			level1Defenders.splice(bar, 1);
+		}
+	}
+	for (var bar = 0; bar < level2Defenders.length; bar++) {
+		if (level2Defenders[bar].health <= 0) {
+			level2Defenders.splice(bar, 1);
+		}		
+	}
+	if (level1Defenders.length == 0) {
+		barriers.splice(0, 1);
+	}
+	if (level2Defenders.length == 0) {
+		barriers.splice(1, 1);
+	}
+
+}
+function drawMoveShootHealthCheckDefenders(level1Defenders, level2Defenders) {
+	for (var d = 0; d < defenders.length; d++) {
+		if (defenders[d].health > 0) {
+			defenders[d].move();
+			defenders[d].shoot();
+			defenders[d].moveBullets(context, playerXPos, playerYPos, playerWidth, playerHeight, cannonballs, cannonballSize);
 		}
 		else {
-			defenders.splice(i,1);
+			defenders.splice(d,1);
 		}
 	}
 }
@@ -487,7 +505,7 @@ function drawCannonball(xpos, ypos, width, height, color) {
 	context.fillStyle = color;
 	context.fillRect(xpos, ypos, width, height); //This math centers the Cannonball in the players platform
 	}
-function trackPlayerCannonballs(defenders, cannonballs, cannonballSize, cannonballHitsCanTake, playerPoints, barriers) {
+function trackPlayerCannonballs(defenders, cannonballs, cannonballSize, cannonballHitsCanTake, barriers, canvasHeight) {
 	//Increments frames since last shot
 	framesElapsedSinceShot += 1; //counter to tell if player cannon can shoot again yet
 	//allows
@@ -521,17 +539,18 @@ function trackPlayerCannonballs(defenders, cannonballs, cannonballSize, cannonba
 							cannonballs.splice(c, 1);
 							defenders[d].health += basicCannonballDamage;
 						}
-					else if (defenders[d].listOfBullets.length > 0)	
+
+					else if (defenders[d].listOfBullets.length > 0)	{	
 					//Checks for collision between level1 bullets and player cannonballs
 						for (var b = 0; b < defenders[d].listOfBullets.length; b++)	{
 							if (detectCollision(cannonballs[c][0], cannonballs[c][1], cannonballSize, cannonballSize, defenders[d].listOfBullets[b][0], defenders[d].listOfBullets[b][1], defenders[d].bulletWidth, defenders[d].bulletHeight)) {
-								playerPoints += defenders[d].destroyPointsGained;
+								playerPoints += level1BulletPoints;     
 								defenders[d].listOfBullets.splice(b,1);
 								cannonballs[c][2] -= 1;
 								if (cannonballs[c][2] == 0) {
 									cannonballs.splice(c,1)
 								}
-
+							}
 								
 					}						
 							
