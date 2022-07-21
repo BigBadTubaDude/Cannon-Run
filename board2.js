@@ -38,7 +38,7 @@ class Barrier {
 
 }
 class Defender {
-	constructor(xpos, ypos,yMaxRange, yMinRange, width, height, color, speed, health, ally, goingUp, topDefender, bottomDefender, levelArray, chanceOfShooting) { 
+	constructor(xpos, ypos,yMaxRange, yMinRange, width, height, color, speed, health, middleDefender, goingUp, topDefender, bottomDefender, levelArray, chanceOfShooting) { 
 		//bottomOfOther is true if this defender shares a space with another defender above this one. topOfOther is the oppposite. 
 		//topDefender and bottomDefender are the defenders to the top or bottom of this one, "none" if not applicable
 		this.xpos = xpos;
@@ -52,14 +52,14 @@ class Defender {
 		this.color = color;
 		this.speed = speed;
 		this.health = health;
-		this.ally = ally;
+		this.middleDefender = middleDefender;
 		this.goingUp = goingUp;
 		this.topDefender = topDefender;
 		this.bottomDefender = bottomDefender;
 		this.levelArray = levelArray;
 		this.chance = chanceOfShooting;
 		this.listOfBullets = []; //keeps track of bullets this Defender has shot
-		if (levelArray == level1Defenders) {
+		if (this.levelArray == level1Defenders) {
 			this.bulletX = 0;
 			this.bulletY = 0;
 			this.XTrajectory = 5;
@@ -71,19 +71,33 @@ class Defender {
 			this.destroyPointsGained = 4;
 			this.catchPointsGained = 5;
 		}
-		else if (levelArray == level2Defenders){ //temporary
-			this.bulletX = 0;
-			this.bulletY = 0;
-			this.XTrajectory = 5;
-			this.YTrajectory = 0;
-			this.bulletWidth = 10;
-			this.bulletHeight = 10;
-			this.bulletColor = "rgb(255,0,0)"
-			this.bulletDamage = -1;
-			this.destroyPointsGained = 4;
-			this.catchPointsGained = 5;
-			}			
-		else if (levelArray == level3Defenders){ //temporary
+		else if (levelArray == level2Defenders){ 
+			if (this.middleDefender == true) {
+				this.bulletX = 0;
+				this.bulletY = 0;
+				this.XTrajectory = 4;
+				this.YTrajectory = 0;
+				this.bulletWidth = 9;
+				this.bulletHeight = 11;
+				this.bulletColor = "rgb(20,100,255)"
+				this.bulletDamage = -1;
+				this.destroyPointsGained = 4;
+				this.catchPointsGained = 5;				
+				}
+			else {
+				this.bulletX = 0;
+				this.bulletY = 0;
+				this.XTrajectory = 5;
+				this.YTrajectory = 0;
+				this.bulletWidth = 10;
+				this.bulletHeight = 10;
+				this.bulletColor = "rgb(40,200,0)"
+				this.bulletDamage = -1;
+				this.destroyPointsGained = 4;
+				this.catchPointsGained = 5;
+				}
+				}			
+		else if (levelArray == level3Defenders){
 			this.bulletX = 0;
 			this.bulletY = 0;
 			this.XTrajectory = 5;
@@ -360,21 +374,20 @@ Barrier1.list(barriers);
 var Barrier2 = new Barrier(barrier2XPos, barrierWidth, barrier2Color);
 Barrier1.list(barriers);
 
-//ally is a boolean. true if on player's team
 //goingUp is a boolean that tells if defender is going up or down. Boolean is swapped once it reaches the outer range
 //////////////Initialize Structures
 /////Defenders
 var Defender1 = new Defender(defender1Xpos, defender1Ypos, defender1YTopRange, defender1YBottomRange, defenderWidth,defender1Height,defender1Color,defender1Speed,defender1Health,true,true, defender1TopDefender, defender1BottomDefender, level3Defenders, middleLevel3ChanceOfShooting);
 Defender1.list();
-var Defender2 = new Defender(defender2Xpos, defender2Ypos, defender2YTopRange, defender2YBottomRange, defenderWidth,defender2Height,defender2Color,defender2Speed,defender2Health,true,true, defender2TopDefender, defender2BottomDefender, level3Defenders, outerLevel3ChanceOfShooting);
+var Defender2 = new Defender(defender2Xpos, defender2Ypos, defender2YTopRange, defender2YBottomRange, defenderWidth,defender2Height,defender2Color,defender2Speed,defender2Health,false,true, defender2TopDefender, defender2BottomDefender, level3Defenders, outerLevel3ChanceOfShooting);
 Defender2.list();
-var Defender3 = new Defender(defender3Xpos, defender3Ypos, defender3YTopRange, defender3YBottomRange, defenderWidth,defender3Height,defender3Color,defender3Speed,defender3Health,true,true, defender3TopDefender, defender3BottomDefender, level3Defenders, outerLevel3ChanceOfShooting);
+var Defender3 = new Defender(defender3Xpos, defender3Ypos, defender3YTopRange, defender3YBottomRange, defenderWidth,defender3Height,defender3Color,defender3Speed,defender3Health,false,true, defender3TopDefender, defender3BottomDefender, level3Defenders, outerLevel3ChanceOfShooting);
 Defender3.list();
 var Defender4 = new Defender(defender4Xpos, defender4Ypos, defender4YTopRange, defender4YBottomRange, defenderWidth,defender4Height,defender4Color,defender4Speed,defender4Health,true,true, defender4TopDefender, defender4BottomDefender, level2Defenders, middleLevel2ChanceOfShooting);
 Defender4.list();
-var Defender5 = new Defender(defender5Xpos, defender5Ypos, defender5YTopRange, defender5YBottomRange, defender5Width,defender5Height,defender5Color,defender5Speed,defender5Health,true,true, defender5TopDefender, defender5BottomDefender, level2Defenders, outerLevel2ChanceOfShooting);
+var Defender5 = new Defender(defender5Xpos, defender5Ypos, defender5YTopRange, defender5YBottomRange, defender5Width,defender5Height,defender5Color,defender5Speed,defender5Health,false,true, defender5TopDefender, defender5BottomDefender, level2Defenders, outerLevel2ChanceOfShooting);
 Defender5.list();
-var Defender6 = new Defender(defender6Xpos, defender6Ypos, defender6YTopRange, defender6YBottomRange, defender6Width,defender6Height,defender6Color,defender6Speed,defender6Health,true,true, defender6TopDefender, defender6BottomDefender, level2Defenders, outerLevel2ChanceOfShooting);
+var Defender6 = new Defender(defender6Xpos, defender6Ypos, defender6YTopRange, defender6YBottomRange, defender6Width,defender6Height,defender6Color,defender6Speed,defender6Health,false,true, defender6TopDefender, defender6BottomDefender, level2Defenders, outerLevel2ChanceOfShooting);
 Defender6.list();
 var Defender7 = new Defender(defender7Xpos, defender7Ypos, defender7YTopRange, defender7YBottomRange, defenderWidth,defender7Height,defender7Color,defender7Speed,defender7Health,true,true, defender7TopDefender, defender7BottomDefender, level1Defenders, level1ChanceOfShooting);
 Defender7.list();
