@@ -4,7 +4,7 @@ context = canvas.getContext("2d");
 canvas.width = 1550
 canvas.height = 500
 canvas.style.background = "rgb(200,200,200)";
-setInterval(gameLoop, 1000/40) //Redraws at 60 fps
+setInterval(gameLoop, 1000/60) //Redraws at 60 fps
 
 
 //Arrays used to keep track of each type of projectile. Each item is an array with at least 2 items as x and y coordinates. Additional array items are noted
@@ -23,6 +23,8 @@ class Defender {
 		//topDefender and bottomDefender are the defenders to the top or bottom of this one, "none" if not applicable
 		this.xpos = xpos;
 		this.ypos = ypos;
+		this.aloneYMaxRange = yMaxRange;//min and max when other defenders in same level are dead
+		this.aloneYMinRange = yMinRange;
 		this.yMaxRange = yMaxRange;
 		this.yMinRange = yMinRange;
 		this.width = width;
@@ -45,6 +47,9 @@ class Defender {
 			this.bulletWidth = 10;
 			this.bulletHeight = 10;
 			this.bulletColor = "rgb(255,0,0)"
+			this.bulletDamage = -1;
+			this.destroyPointsGained = 4;
+			this.catchPointsGained = 5;
 			}
 			else { //temporary
 			this.bulletX = 0;
@@ -76,12 +81,26 @@ class Defender {
 			this.listOfBullets.push([this.xpos, this.ypos + (this.height / 2), this.bulletWidth, this.bulletHeight])	
 			}
 	}
-	moveBullets(context) {
+	moveBullets(context, playerX, playerY, playerWidth, playerHeight, cannonballArray, cannonballSize) {
 		for (var i = 0; i < this.listOfBullets.length; i++) {
 			this.listOfBullets[i][0] -= this.XTrajectory;
 			this.listOfBullets[i][1] -= this.YTrajectory;
-			context.fillStyle = this.bulletColor;
-			context.fillRect(this.listOfBullets[i][0], this.listOfBullets[i][1], this.listOfBullets[i][2], this.listOfBullets[i][3]);	
+			if (detectCollision(this.listOfBullets[i][0],this.listOfBullets[i][1],this.listOfBullets[i][2],this.listOfBullets[i][3],playerX,playerY,playerWidth,playerHeight)) {
+				//Detects collision with player
+				playerPoints += 5;
+				this.listOfBullets.splice(i,1);
+				}
+			else if (detectCollision(this.listOfBullets[i][0], this.listOfBullets[i][1], this.bulletWidth, this.bulletHeight, 0, 0, WallWidth, canvasHeight)) {
+				//Detects collision with player wall
+				WallHealth += this.bulletDamage;
+				this.listOfBullets.splice(i,1);
+				}
+			else {
+				context.fillStyle = this.bulletColor;
+				context.fillRect(this.listOfBullets[i][0], this.listOfBullets[i][1], this.bulletWidth, this.bulletHeight);
+			}
+
+	
 		}
 	}
 	list() { //puts defender into array of all defenders and an array with other defenders of the same level
@@ -95,11 +114,16 @@ class Defender {
 
 	move() { 
 
-		if (this.topDefender != "none") {
+		if (this.topDefender != "none" && this.topDefender.health > 0) {
 			this.yMaxRange = this.topDefender.ypos + this.topDefender.height;
 		}
-		if (this.bottomDefender != "none") {
+		else if (this.bottomDefender != "none" && this.bottomDefender.health > 0) {
 			this.yMinRange = this.bottomDefender.ypos;			
+		}
+		// else if (this.secondTopDefender != "none" &&)
+		else {
+			this.yMinRange = this.aloneYMinRange;
+			this.yMaxRange = this.aloneYMaxRange;
 		}
 
 
@@ -160,7 +184,7 @@ var defender1BottomDefender = "none";
 var defender2Height = 20;
 var defender2Xpos = canvasWidth - enemyWallWidth - defenderGap - defenderWidth;
 var defender2Ypos = canvasHeight - defender2Height; 
-var defender2YTopRange = 40; // Will change depending on current Defender1 possition
+var defender2YTopRange = 0; // Will change depending on current Defender1 possition
 var defender2YBottomRange = canvasHeight;
 var defender2Health = 250;
 var defender2Speed = 3.5;
@@ -172,7 +196,7 @@ var defender3Height = 20;
 var defender3Xpos = canvasWidth - enemyWallWidth - defenderGap - defenderWidth;
 var defender3Ypos = 0;
 var defender3YTopRange = 0;
-var defender3YBottomRange = canvasWidth; // Will change depending on current Defender1 possition
+var defender3YBottomRange = canvasHeight; // Will change depending on current Defender1 possition
 var defender3Health = 250;
 var defender3Speed = 3;
 var defender3TopDefender = "none";
@@ -195,7 +219,7 @@ var defender5Height = 25;
 var defender5Width = 50;
 var defender5Xpos = canvasWidth - enemyWallWidth - (defenderGap * 2) - (defenderWidth * 2) - (defender5Width / 2) + (defenderWidth / 2);
 var defender5Ypos = canvasHeight - defender5Height - 5;
-var defender5YTopRange = defender4Ypos + defender4Height; //Will change as Defender4 moves
+var defender5YTopRange = 0; //Will change as Defender4 moves
 var defender5YBottomRange = canvasHeight - 5;
 var defender5Health = 200;
 var defender5Speed = 7;
@@ -208,7 +232,7 @@ var defender6Width = 50;
 var defender6Xpos = canvasWidth - enemyWallWidth - (defenderGap * 2) - (defenderWidth * 2) - (defender6Width / 2) + (defenderWidth / 2);
 var defender6Ypos = 5;
 var defender6YTopRange = 0;
-var defender6YBottomRange = defender4Ypos; //Will change as Defender4 moves
+var defender6YBottomRange = canvasHeight; //Will change as Defender4 moves
 var defender6Health = 200;
 var defender6Speed = 7;
 var defender6TopDefender = "none";
@@ -274,11 +298,11 @@ var playerColor = "rgb(100,100,100)"
 var cannonballHitsCanTake = 3;
 var cannonballSize = 33;
 var playerCannonballColor = "black";
-var playerCannonballspeed = 4;
+var playerCannonballspeed = 6;
 var pointsForLevelOneBulletHit = 5;
 var shootInterval = 40 ; //Number of frames before player can shoot again. EX. At 60 fps, 30 frames would be half a second.
 var framesElapsedSinceShot = 0; // Frames since last player generated Cannonball
-var basicCannonballDamage = -20; 
+var basicCannonballDamage = -500; 
 
 
 
@@ -350,7 +374,7 @@ function gameLoop() {
 	createWall(enemyWallXPos, 0, enemyWallWidth, canvasHeight, enemyWallColor)
 	//Manages movement of players and projectiles
 	makeMovementSmooth();
-	trackPlayerCannonballs();
+	trackPlayerCannonballs(defenders, cannonballs, cannonballHitsCanTake, playerPoints);
 	//Create Defenders
 	drawMoveShootHealthCheckDefenders()
 	///////Display scores and cards under canvas
@@ -376,7 +400,7 @@ function drawMoveShootHealthCheckDefenders() {
 			defenders[i].create(context);
 			defenders[i].move();
 			defenders[i].shoot();
-			defenders[i].moveBullets(context);
+			defenders[i].moveBullets(context, playerXPos, playerYPos, playerWidth, playerHeight, cannonballs, cannonballSize);
 		}
 		else {
 			defenders.splice(i,1);
@@ -403,9 +427,9 @@ function drawCannonball(xpos, ypos, width, height, color) {
 	context.fillStyle = color;
 	context.fillRect(xpos, ypos, width, height); //This math centers the Cannonball in the players platform
 	}
-function trackPlayerCannonballs() {
+function trackPlayerCannonballs(defenders, cannonballs, cannonballHitsCanTake, playerPoints) {
 	//Increments frames since last shot
-	framesElapsedSinceShot += 1;
+	framesElapsedSinceShot += 1; //counter to tell if player cannon can shoot again yet
 	//allows
 	if (spaceKeyPress && framesElapsedSinceShot >= shootInterval) {
 		createCannonball(playerXPos,playerYPos,cannonballHitsCanTake);
@@ -422,40 +446,35 @@ function trackPlayerCannonballs() {
 				cannonballs.splice(i, 1);
 				}
 			else {
-				for (var d = 0; d < defenders.length; d++) { // d represents each Defender in array. Checks for collision with player cannonballs
+				for (var d = 0; d < defenders.length; d++) { // d represents each Defender in array. 
+					//Checks for collision between Defenders and player cannonballs
 					if (cannonballs[i][0] + cannonballSize >= defenders[d].xpos && (cannonballs[i][0]) <= defenders[d].xpos + defenders[d].width && cannonballs[i][1] <= defenders[d].ypos + defenders[d].height && cannonballs[i][1] + cannonballSize >= defenders[d].ypos) { //Does cannonball hit a defender?
 							cannonballs.splice(i, 1);
 							defenders[d].health += basicCannonballDamage;
 						}
+					else if (defenders[d].listOfBullets.length > 0)	
+					//Checks for collision between level1 bullets and player cannonballs
+						for (var b = 0; b < defenders[d].listOfBullets.length; b++)	{
+							if (detectCollision(cannonballs[i][0], cannonballs[i][1], cannonballSize, cannonballSize, defenders[d].listOfBullets[b][0], defenders[d].listOfBullets[b][1], defenders[d].bulletWidth, defenders[d].bulletHeight)) {
+								playerPoints += defenders[d].destroyPointsGained;
+								defenders[d].listOfBullets.splice(b,1);
 
-					else {		
-						if (defenders[d].listOfBullets.length > 0) { //checks if Defender has any bullets on the field				
-						for (var b = 0; b < defenders[d].listOfBullets.length; b++) { // b is each bullet a defender has shot currently on the field
-							if (cannonballs[i][0] + cannonballSize + 1 >= defenders[d].listOfBullets[b][0] && (cannonballs[i][0]) <= defenders[d].listOfBullets[b][0] + defenders[d].bulletWidth && cannonballs[i][1] <= defenders[d].listOfBullets[b][1] + defenders[d].bulletHeight && cannonballs[i][1] + cannonballSize + 1 >= defenders[d].listOfBullets[b][1]){
-								//Checks if cannonball and bullet collide. if so, deduct hit point from cannonball, remove bullet, and add points to player
-								cannonballs[i][2] -= 1;
-								defenders[d].listOfBullets.splice(b, 1);
-								playerPoints += pointsForLevelOneBulletHit;
-								if (cannonballs[i][2] == 0) { //If cannonball has been hit enough times, remove cannonball
-									cannonballs.splice(i, 1);
-									}
-								}
-							}
-						}
-
+								
+					}						
 							
 						}	
-					}				
+					}	 			
+							}
 				}
 			//Detect each Cannonbal for defender collision
 
 			}
-		}
+		
 
 //Collision detection functions
 function detectCollision(item1X, item1Y, item1Width, item1Height, item2X, item2Y, item2Width, item2Height) {
 	let itemsCollide = false;
-	if (item1X + item1Width > item2X && item1X < item2X + item2Width && item1Y + item1Height > item2Y && item1Y < item2Y - item2Height) {
+	if (item1X + item1Width > item2X && item1X < item2X + item2Width && item1Y + item1Height > item2Y && item1Y < item2Y + item2Height) {
 		itemsCollide = true
 		}
 	return itemsCollide;
