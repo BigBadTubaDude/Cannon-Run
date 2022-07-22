@@ -96,7 +96,7 @@ class Defender {
 				this.bulletColor = "rgb(205, 165,0)"
 				this.bulletDamage = -1;
 				this.destroyPointsGained = 100;
-				this.catchPointsGained = this.bulletHealth * -1; //Can't cathc
+				this.bouncing = false
 				}
 				}			
 		else if (levelArray == level3Defenders){
@@ -117,13 +117,17 @@ class Defender {
 				this.bulletY = 0;
 				this.XTrajectory = 4;
 				this.YTrajectory = 2;
+				if (this == Defender3) {
+					this.YTrajectory *= -1;
+				}
 				this.bulletWidth = 50;
 				this.bulletHeight = 50;
 				this.bulletHealth = 180;				
-				this.bulletColor = "rgb(255,215,0)"
+				this.bulletColor = "rgb(255,215,0, 0.5)"
 				this.bulletDamage = -1;
 				this.destroyPointsGained = 4;
 				this.catchPointsGained = 5;
+				this.bouncing = false
 				}				
 			}					
 		}
@@ -133,10 +137,10 @@ class Defender {
 		if (this.levelArray == level1Defenders && this.health > 0 && Math.random() < this.chance) {
 			canShoot = true;
 			}
-		else if (level1Defenders.length == 0 && this.levelArray == level2Defenders && this.health > 0 && Math.random() > this.chance){
+		else if (level1Defenders.length == 0 && this.levelArray == level2Defenders && this.health > 0 && Math.random() < this.chance){
 			canShoot = true;
 			}
-		else if (level2Defenders.length == 0 && this.levelArray == level3Defenders && this.health > 0 && Math.random() > this.chance){
+		else if (level2Defenders.length == 0 && this.levelArray == level3Defenders && this.health > 0 && Math.random() < this.chance){
 			canShoot = true;
 			}
 		return canShoot;
@@ -159,7 +163,7 @@ class Defender {
 						}			
 					}
 				else if (Math.random() < this.chance) { //level 2 outer
-					this.listOfBullets.push([this.xpos, this.ypos + (this.height / 2), this.bulletWidth, this.bulletHeight, this.bulletHealth])
+					this.listOfBullets.push([this.xpos, this.ypos + (this.height / 2), this.bulletWidth, this.bulletHeight, this.bulletHealth, this.bouncing])
 					}									
 				}
 			else {
@@ -177,11 +181,12 @@ class Defender {
 						this.listOfBullets.push([this.xpos, this.ypos + this.height, this.bulletWidth, this.bulletHeight])	
 						}			
 					}
-				else if (Math.random() < this.chance) { //level 3 outer
-					if (this == Defender2) {
-						this.bulletGoingUp = false;
-					}
-					this.listOfBullets.push([this.xpos, this.ypos + (this.height / 2), this.bulletWidth, this.bulletHeight, this.bulletHealth, this.YTrajectory])
+				else if (Math.random() < this.chance && this.ypos >= 0) { //level 3 outer
+					let buffer = 0;
+					if (this.ypos + this.bulletHeight >= canvasHeight) { //fixes bullets getting caught in bottom of screen
+						buffer = this.ypos - (canvasHeight - this.bulletHeight);
+					}	
+					this.listOfBullets.push([this.xpos, this.ypos - buffer, this.bulletWidth, this.bulletHeight, this.bulletHealth, this.YTrajectory, this.bouncing])
 					}									
 				}				
 			}
@@ -296,7 +301,7 @@ var level1DefenderColor = "red";
 
 //////Each Defender's chance of shooting
 var middleLevel3ChanceOfShooting = 0.02;
-var outerLevel3ChanceOfShooting = 0.005;
+var outerLevel3ChanceOfShooting = 0.9999;
 var middleLevel2ChanceOfShooting = 0.005;
 var outerLevel2ChanceOfShooting = 0.002;
 var level1ChanceOfShooting = 0.015;
@@ -326,7 +331,7 @@ var defender2Color = outerDefenderColor;
 //////Defender3 level 3 high defender
 var defender3Height = 20;
 var defender3Xpos = canvasWidth - enemyWallWidth - defenderGap - defenderWidth;
-var defender3Ypos = 0;
+var defender3Ypos = 10;
 var defender3YTopRange = 0;
 var defender3YBottomRange = canvasHeight; // Will change depending on current Defender1 possition
 var defender3Health = 250;
