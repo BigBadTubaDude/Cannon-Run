@@ -147,7 +147,7 @@ class Defender {
 	shoot() {
 		if (this.canShoot()) {
 			if (this.levelArray == level1Defenders) {
-				this.listOfBullets.push([this.xpos, this.ypos + (this.height / 2), this.bulletWidth, this.bulletHeight, this.YTrajectory, this.bouncing, this.XTrajectory])	
+				this.listOfBullets.push([this.xpos, this.ypos + (this.height / 2), this.bulletWidth, this.bulletHeight, this.bulletHealth, this.YTrajectory, this.bouncing, this.XTrajectory])	
 			}
 			else if (this.levelArray == level2Defenders) {
 				if (this.middleDefender == true) { //level 2 middle
@@ -492,8 +492,8 @@ Defender10.list();
 //Assigns defenders which defender to look when calculating max or min range of motion
 Defender2.topDefender = Defender1;
 Defender3.bottomDefender = Defender1;
-// Defender5.topDefender = Defender4;
-// Defender6.bottomDefender = Defender4;
+Defender5.topDefender = Defender4;
+Defender6.bottomDefender = Defender4;
 
 
 //Variables used to bypass keyboard studder/rappid fire
