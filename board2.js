@@ -58,8 +58,9 @@ class Defender {
 		this.bottomDefender = bottomDefender;
 		this.levelArray = levelArray;
 		this.chance = chanceOfShooting;
+		this.bulletGoingUp = true;
 		this.listOfBullets = []; //keeps track of bullets this Defender has shot
-		if (this.levelArray == level1Defenders) {
+		if (this.levelArray == level1Defenders) { //Level 1 defender bullet stats
 			this.bulletX = 0;
 			this.bulletY = 0;
 			this.XTrajectory = 5;
@@ -72,42 +73,58 @@ class Defender {
 			this.catchPointsGained = 5;
 		}
 		else if (levelArray == level2Defenders){ 
-			if (this.middleDefender == true) {
+			if (this.middleDefender == true) { //Level 2 middle defender bullet stats
 				this.bulletX = 0;
 				this.bulletY = 0;
 				this.XTrajectory = 4;
 				this.YTrajectory = 0;
-				this.bulletWidth = 9;
-				this.bulletHeight = 11;
+				this.bulletWidth = 15;
+				this.bulletHeight = 5;
 				this.bulletColor = "rgb(20,100,255)"
-				this.bulletDamage = -1;
-				this.destroyPointsGained = 4;
-				this.catchPointsGained = 5;				
+				this.bulletDamage = -5;
+				this.destroyPointsGained = 8;
+				this.catchPointsGained = 10;				
 				}
-			else {
+			else { //Level 2 outer defender bullet stats
 				this.bulletX = 0;
 				this.bulletY = 0;
-				this.XTrajectory = 5;
+				this.XTrajectory = 2;
 				this.YTrajectory = 0;
-				this.bulletWidth = 10;
-				this.bulletHeight = 10;
-				this.bulletColor = "rgb(40,200,0)"
+				this.bulletWidth = 43;
+				this.bulletHeight = 43;
+				this.bulletHealth = 120;
+				this.bulletColor = "rgb(205, 165,0)"
 				this.bulletDamage = -1;
-				this.destroyPointsGained = 4;
-				this.catchPointsGained = 5;
+				this.destroyPointsGained = 100;
+				this.catchPointsGained = this.bulletHealth * -1; //Can't cathc
 				}
 				}			
 		else if (levelArray == level3Defenders){
-			this.bulletX = 0;
-			this.bulletY = 0;
-			this.XTrajectory = 5;
-			this.YTrajectory = 0;
-			this.bulletWidth = 10;
-			this.bulletHeight = 10;
-			this.bulletColor = "rgb(255,0,0)"
-			this.bulletDamage = -1;
-			this.destroyPointsGained = 4;
-			this.catchPointsGained = 5;
+			if (this.middleDefender == true) { //Level 3 middle defender bullet stats
+				this.bulletX = 0;
+				this.bulletY = 0;
+				this.XTrajectory = 3;
+				this.YTrajectory = 0;
+				this.bulletWidth = 15;
+				this.bulletHeight = 7;				
+				this.bulletColor = "rgb(20,100,255)"
+				this.bulletDamage = -5;
+				this.destroyPointsGained = 8;
+				this.catchPointsGained = 12;				
+				}
+			else { //Level 3 outer defender bullet stats
+				this.bulletX = 0;
+				this.bulletY = 0;
+				this.XTrajectory = 4;
+				this.YTrajectory = 5;
+				this.bulletWidth = 50;
+				this.bulletHeight = 50;
+				this.bulletHealth = 180;				
+				this.bulletColor = "rgb(255,215,0)"
+				this.bulletDamage = -1;
+				this.destroyPointsGained = 4;
+				this.catchPointsGained = 5;
+				}				
 			}					
 		}
 
@@ -126,16 +143,63 @@ class Defender {
 	}
 	shoot() {
 		if (this.canShoot()) {
-			this.listOfBullets.push([this.xpos, this.ypos + (this.height / 2), this.bulletWidth, this.bulletHeight])	
+			if (this.levelArray == level1Defenders) {
+				this.listOfBullets.push([this.xpos, this.ypos + (this.height / 2), this.bulletWidth, this.bulletHeight])	
+			}
+			else if (this.levelArray == level2Defenders) {
+				if (this.middleDefender == true) { //level 2 middle
+					if (Math.random() < this.chance){ //shoots from top of Defender4
+						this.listOfBullets.push([this.xpos, this.ypos, this.bulletWidth, this.bulletHeight])	
+						}
+					else if (Math.random() < this.chance) { //shoots from middle of defender4
+						this.listOfBullets.push([this.xpos, this.ypos + (this.height / 2), this.bulletWidth, this.bulletHeight])	
+						}
+					if (Math.random() < this.chance) {
+						this.listOfBullets.push([this.xpos, this.ypos + this.height, this.bulletWidth, this.bulletHeight])	
+						}			
+					}
+				else if (Math.random() < this.chance) { //level 2 outer
+					this.listOfBullets.push([this.xpos, this.ypos + (this.height / 2), this.bulletWidth, this.bulletHeight, this.bulletHealth])
+					}									
+				}
+			else {
+				if (this.middleDefender == true) { //level 3 middle
+					if (Math.random() < this.chance){ //shoots from top of Defender4
+						this.listOfBullets.push([this.xpos, this.ypos, this.bulletWidth, this.bulletHeight])	
+						}
+					else if (Math.random() < this.chance) { //shoots from top 3rd of defender4
+						this.listOfBullets.push([this.xpos, this.ypos + (this.height / 3), this.bulletWidth, this.bulletHeight])	
+						}
+					else if (Math.random() < this.chance) { //shoots from lower 3rd of defender4
+						this.listOfBullets.push([this.xpos, this.ypos + ((this.height / 3) * 2), this.bulletWidth, this.bulletHeight])	
+						}					
+					if (Math.random() < this.chance) {
+						this.listOfBullets.push([this.xpos, this.ypos + this.height, this.bulletWidth, this.bulletHeight])	
+						}			
+					}
+				else if (Math.random() < this.chance) { //level 3 outer
+					if (this == Defender2) {
+						this.bulletGoingUp = false;
+					}
+					this.listOfBullets.push([this.xpos, this.ypos + (this.height / 2), this.bulletWidth, this.bulletHeight, this.bulletHealth])
+					}									
+				}				
 			}
 	}
 	moveBullets(context, playerX, playerY, playerWidth, playerHeight, cannonballArray, cannonballSize) {
 		for (var i = 0; i < this.listOfBullets.length; i++) {
-			this.listOfBullets[i][0] -= this.XTrajectory;
-			this.listOfBullets[i][1] -= this.YTrajectory;
+				this.listOfBullets[i][0] -= this.XTrajectory;
+				this.listOfBullets[i][1] -= this.YTrajectory;
+			if (this.listOfBullets[i][1] + this.bulletHeight >= canvasHeight || this.listOfBullets[i][1] <= 0) {
+				this.YTrajectory *= -1;
+			}
+			// if (!this.bulletGoingUp) {
+			// 	this.YTrajectory *= -1;
+			// }
+
 			if (detectCollision(this.listOfBullets[i][0],this.listOfBullets[i][1],this.listOfBullets[i][2],this.listOfBullets[i][3],playerX,playerY,playerWidth,playerHeight)) {
 				//Detects collision with player 
-				playerPoints += 5;
+				playerPoints += this.catchPointsGained;
 				this.listOfBullets.splice(i,1);
 				}
 			else if (detectCollision(this.listOfBullets[i][0], this.listOfBullets[i][1], this.bulletWidth, this.bulletHeight, 0, 0, WallWidth, canvasHeight)) {
@@ -212,10 +276,9 @@ var cannonballHitsCanTake = 4;
 var cannonballSize = 33;
 var playerCannonballColor = "black";
 var playerCannonballspeed = 4;
-var pointsForLevelOneBulletHit = 5;
 var shootInterval = 39 ; //Number of frames before player can shoot again. EX. At 60 fps, 30 frames would be half a second.
 var framesElapsedSinceShot = 0; // Frames since last player generated Cannonball
-var basicCannonballDamage = -200; 
+var basicCannonballDamage = -20; 
 
 //Enemy Wall Health variables
 var EnemyWallHealth = 600;
@@ -229,13 +292,14 @@ var defenderGap = 100;
 var defenderWidth = 20;
 var middleDefenderColor = "rgb(10,10,10)";
 var outerDefenderColor = "green";
+var level1DefenderColor = "red";
+
+//////Each Defender's chance of shooting
 var middleLevel3ChanceOfShooting = 0.02;
 var outerLevel3ChanceOfShooting = 0.09;
-var middleLevel2ChanceOfShooting = 0.1;
-var outerLevel2ChanceOfShooting = 0.3;
-var level1DefenderColor = "red";
+var middleLevel2ChanceOfShooting = 0.005;
+var outerLevel2ChanceOfShooting = 0.002;
 var level1ChanceOfShooting = 0.015;
-
 //////Defender1 (closest to enemy wall)x level 3 middle
 var defender1Xpos = canvasWidth - enemyWallWidth - defenderGap - defenderWidth;
 var defender1Ypos = 30;
@@ -352,11 +416,6 @@ var defender10Speed = 9;
 var defender10TopDefender = "none";
 var defender10BottomDefender = "none";
 var defender10Color = level1DefenderColor;
-//////Each Defender's chance of shooting
-middleLevel3ChanceOfShooting = 0.025;
-outerLevel3ChanceOfShooting = 0.09;
-middleLevel2ChanceOfShooting = 0.1;
-outerLevel2ChanceOfShooting = 0.3;
 
 //Barrier Variables
 var barrierWidth = 5;
@@ -383,20 +442,20 @@ var Defender2 = new Defender(defender2Xpos, defender2Ypos, defender2YTopRange, d
 Defender2.list();
 var Defender3 = new Defender(defender3Xpos, defender3Ypos, defender3YTopRange, defender3YBottomRange, defenderWidth,defender3Height,defender3Color,defender3Speed,defender3Health,false,true, defender3TopDefender, defender3BottomDefender, level3Defenders, outerLevel3ChanceOfShooting);
 Defender3.list();
-var Defender4 = new Defender(defender4Xpos, defender4Ypos, defender4YTopRange, defender4YBottomRange, defenderWidth,defender4Height,defender4Color,defender4Speed,defender4Health,true,true, defender4TopDefender, defender4BottomDefender, level2Defenders, middleLevel2ChanceOfShooting);
-Defender4.list();
-var Defender5 = new Defender(defender5Xpos, defender5Ypos, defender5YTopRange, defender5YBottomRange, defender5Width,defender5Height,defender5Color,defender5Speed,defender5Health,false,true, defender5TopDefender, defender5BottomDefender, level2Defenders, outerLevel2ChanceOfShooting);
-Defender5.list();
-var Defender6 = new Defender(defender6Xpos, defender6Ypos, defender6YTopRange, defender6YBottomRange, defender6Width,defender6Height,defender6Color,defender6Speed,defender6Health,false,true, defender6TopDefender, defender6BottomDefender, level2Defenders, outerLevel2ChanceOfShooting);
-Defender6.list();
-var Defender7 = new Defender(defender7Xpos, defender7Ypos, defender7YTopRange, defender7YBottomRange, defenderWidth,defender7Height,defender7Color,defender7Speed,defender7Health,true,true, defender7TopDefender, defender7BottomDefender, level1Defenders, level1ChanceOfShooting);
-Defender7.list();
-var Defender8 = new Defender(defender8Xpos, defender8Ypos, defender8YTopRange, defender8YBottomRange, defenderWidth,defender8Height,defender8Color,defender8Speed,defender8Health,true,true, defender8TopDefender, defender8BottomDefender, level1Defenders, level1ChanceOfShooting);
-Defender8.list();
-var Defender9 = new Defender(defender9Xpos, defender9Ypos, defender9YTopRange, defender9YBottomRange, defenderWidth,defender9Height,defender9Color,defender9Speed,defender9Health,true,true, defender9TopDefender, defender9BottomDefender, level1Defenders, level1ChanceOfShooting);
-Defender9.list();
-var Defender10 = new Defender(defender10Xpos, defender10Ypos, defender10YTopRange, defender10YBottomRange, defenderWidth,defender10Height,defender10Color,defender10Speed,defender10Health,true,true, defender10TopDefender, defender10BottomDefender, level1Defenders, level1ChanceOfShooting);
-Defender10.list();
+// var Defender4 = new Defender(defender4Xpos, defender4Ypos, defender4YTopRange, defender4YBottomRange, defenderWidth,defender4Height,defender4Color,defender4Speed,defender4Health,true,true, defender4TopDefender, defender4BottomDefender, level2Defenders, middleLevel2ChanceOfShooting);
+// Defender4.list();
+// var Defender5 = new Defender(defender5Xpos, defender5Ypos, defender5YTopRange, defender5YBottomRange, defender5Width,defender5Height,defender5Color,defender5Speed,defender5Health,false,true, defender5TopDefender, defender5BottomDefender, level2Defenders, outerLevel2ChanceOfShooting);
+// Defender5.list();
+// var Defender6 = new Defender(defender6Xpos, defender6Ypos, defender6YTopRange, defender6YBottomRange, defender6Width,defender6Height,defender6Color,defender6Speed,defender6Health,false,true, defender6TopDefender, defender6BottomDefender, level2Defenders, outerLevel2ChanceOfShooting);
+// Defender6.list();
+// var Defender7 = new Defender(defender7Xpos, defender7Ypos, defender7YTopRange, defender7YBottomRange, defenderWidth,defender7Height,defender7Color,defender7Speed,defender7Health,true,true, defender7TopDefender, defender7BottomDefender, level1Defenders, level1ChanceOfShooting);
+// Defender7.list();
+// var Defender8 = new Defender(defender8Xpos, defender8Ypos, defender8YTopRange, defender8YBottomRange, defenderWidth,defender8Height,defender8Color,defender8Speed,defender8Health,true,true, defender8TopDefender, defender8BottomDefender, level1Defenders, level1ChanceOfShooting);
+// Defender8.list();
+// var Defender9 = new Defender(defender9Xpos, defender9Ypos, defender9YTopRange, defender9YBottomRange, defenderWidth,defender9Height,defender9Color,defender9Speed,defender9Health,true,true, defender9TopDefender, defender9BottomDefender, level1Defenders, level1ChanceOfShooting);
+// Defender9.list();
+// var Defender10 = new Defender(defender10Xpos, defender10Ypos, defender10YTopRange, defender10YBottomRange, defenderWidth,defender10Height,defender10Color,defender10Speed,defender10Health,true,true, defender10TopDefender, defender10BottomDefender, level1Defenders, level1ChanceOfShooting);
+// Defender10.list();
 
 
 
@@ -528,52 +587,87 @@ function trackPlayerCannonballs(defenders, cannonballs, cannonballSize, cannonba
 	}
 	//Track basic cannonballs shot by player
 	for (var c = 0; c < cannonballs.length; c++) {
-			//Increment projectiles each frame
-			cannonballs[c][0] += playerCannonballspeed;
-			drawCannonball(cannonballs[c][0], cannonballs[c][1], cannonballSize, cannonballSize, playerCannonballColor);
-			//Detect each Cannonball for enemy wall collision
-			if (barriers.length > 0) {
-				for (var bar = 0; bar < barriers.length; bar++) {
-					if (detectCollision(cannonballs[c][0], cannonballs[c][1], cannonballSize, cannonballSize, barriers[bar].xpos, 0, barriers[bar].width, canvasHeight)) {
-						//Does cannonball hit a barrier? if so, deletes cannonball
-						cannonballs.splice(c,1);
-						}
-					}			
-				}
-			if (cannonballs[c][0] + cannonballSize > canvasWidth - enemyWallWidth) {
-			// Does cannonball hit wall? Simple enough to not use full detectCollision function
-				EnemyWallHealth += basicCannonballDamage;
-				cannonballs.splice(c, 1);
-				}
-			else {
-				for (var d = 0; d < defenders.length; d++) { // d represents each Defender in array. 
-					//Checks for collision between Defenders and player cannonballs
-					if (cannonballs[c][0] + cannonballSize >= defenders[d].xpos && (cannonballs[c][0]) <= defenders[d].xpos + defenders[d].width && cannonballs[c][1] <= defenders[d].ypos + defenders[d].height && cannonballs[c][1] + cannonballSize >= defenders[d].ypos) { //Does cannonball hit a defender?
-							cannonballs.splice(c, 1);
-							defenders[d].health += basicCannonballDamage;
-						}
+		//Increment projectiles each frame
+		cannonballs[c][0] += playerCannonballspeed;
+		drawCannonball(cannonballs[c][0], cannonballs[c][1], cannonballSize, cannonballSize, playerCannonballColor);
+		//////Collision detection
+		if (barriers.length > 0) {
+			for (var bar = 0; bar < barriers.length; bar++) {
+				if (detectCollision(cannonballs[c][0], cannonballs[c][1], cannonballSize, cannonballSize, barriers[bar].xpos, 0, barriers[bar].width, canvasHeight)) {
+					//Does cannonball hit a barrier? if so, deletes cannonball
+					cannonballs.splice(c,1);
+					}
+				}			
+			}
+		if (cannonballs[c][0] + cannonballSize > canvasWidth - enemyWallWidth) {
+		// Does cannonball hit wall? Simple enough to not use full detectCollision function
+			EnemyWallHealth += basicCannonballDamage;
+			cannonballs.splice(c, 1);
+			}
+		else {
+			for (var d = 0; d < defenders.length; d++) { // d represents each Defender in array.  //////////////DEFENDER LOOP//////////////////////
+				//Checks for collision between Defenders and player cannonballs
+				if (cannonballs[c][0] + cannonballSize >= defenders[d].xpos && (cannonballs[c][0]) <= defenders[d].xpos + defenders[d].width && cannonballs[c][1] <= defenders[d].ypos + defenders[d].height && cannonballs[c][1] + cannonballSize >= defenders[d].ypos) { 
+				//Does cannonball hit a defender?
+						cannonballs.splice(c, 1);
+						defenders[d].health += basicCannonballDamage;
+					}
 
-					else if (defenders[d].listOfBullets.length > 0)	{	
-					//Checks for collision between level1 bullets and player cannonballs
-						for (var b = 0; b < defenders[d].listOfBullets.length; b++)	{
+				else if (defenders[d].listOfBullets.length > 0)	{						
+					for (var b = 0; b < defenders[d].listOfBullets.length; b++)	{
+						if (defenders[d].levelArray == level1Defenders){
 							if (detectCollision(cannonballs[c][0], cannonballs[c][1], cannonballSize, cannonballSize, defenders[d].listOfBullets[b][0], defenders[d].listOfBullets[b][1], defenders[d].bulletWidth, defenders[d].bulletHeight)) {
-								playerPoints += level1BulletPoints;     
-								defenders[d].listOfBullets.splice(b,1);
+								//Checks for collision between level1 bullets and player cannonballs
+								playerPoints += defenders[d].destroyPointsGained;     
+								defenders[d].listOfBullets.splice(b,1);	
 								cannonballs[c][2] -= 1;
 								if (cannonballs[c][2] == 0) {
 									cannonballs.splice(c,1)
+									}															
 								}
 							}
-								
-					}						
-							
-						}	
-					}	 			
+						else if (defenders[d].levelArray == level2Defenders){
+							if (defenders[d].middleDefender) {
+								if (detectCollision(cannonballs[c][0], cannonballs[c][1], cannonballSize, cannonballSize, defenders[d].listOfBullets[b][0], defenders[d].listOfBullets[b][1], defenders[d].bulletWidth, defenders[d].bulletHeight)) {
+									//Checks for collision between level1 bullets and player cannonballs
+									playerPoints += defenders[d].destroyPointsGained;     
+									defenders[d].listOfBullets.splice(b,1);  
+									cannonballs[c][2] -= 1;
+									if (cannonballs[c][2] == 0) {
+										cannonballs.splice(c,1)
+										}																	
+									}								
+								}
+							else {console.log(cannonballs[c][0])
+								if (detectCollision(cannonballs[c][0], cannonballs[c][1], cannonballSize, cannonballSize, defenders[d].listOfBullets[b][0], defenders[d].listOfBullets[b][1], defenders[d].bulletWidth, defenders[d].bulletHeight)) {
+									//Checks for collision between level2 outer bullets and player cannonballs									   
+									defenders[d].listOfBullets[b][4] +=  basicCannonballDamage;
+									if (defenders[d].listOfBullets[b][4] <= 0) {
+										console.log(defenders[d].listOfBullets[b][4])										
+										defenders[d].listOfBullets.splice(b,1);
+										playerPoints += defenders[d].destroyPointsGained;
+										}
+									cannonballs.splice(c,1)
+															
+									}
+								}
 							}
-				}
-			//Detect each Cannonbal for defender collision
+						else if (defenders[d].levelArray == level3Defenders){
+							if (defenders[d].middleDefender) {
 
+								}
+							else {
+
+								}
+							}														
+							}														
+						}
+						
+					}	
+				}	 			
 			}
+		}
+	
 		
 
 //Collision detection functions
