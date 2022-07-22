@@ -116,7 +116,7 @@ class Defender {
 				this.bulletX = 0;
 				this.bulletY = 0;
 				this.XTrajectory = 4;
-				this.YTrajectory = 5;
+				this.YTrajectory = 2;
 				this.bulletWidth = 50;
 				this.bulletHeight = 50;
 				this.bulletHealth = 180;				
@@ -181,7 +181,7 @@ class Defender {
 					if (this == Defender2) {
 						this.bulletGoingUp = false;
 					}
-					this.listOfBullets.push([this.xpos, this.ypos + (this.height / 2), this.bulletWidth, this.bulletHeight, this.bulletHealth])
+					this.listOfBullets.push([this.xpos, this.ypos + (this.height / 2), this.bulletWidth, this.bulletHeight, this.bulletHealth, this.YTrajectory])
 					}									
 				}				
 			}
@@ -189,9 +189,9 @@ class Defender {
 	moveBullets(context, playerX, playerY, playerWidth, playerHeight, cannonballArray, cannonballSize) {
 		for (var i = 0; i < this.listOfBullets.length; i++) {
 				this.listOfBullets[i][0] -= this.XTrajectory;
-				this.listOfBullets[i][1] -= this.YTrajectory;
+				this.listOfBullets[i][1] -= this.listOfBullets[i][5]; //Y Trajectory
 			if (this.listOfBullets[i][1] + this.bulletHeight >= canvasHeight || this.listOfBullets[i][1] <= 0) {
-				this.YTrajectory *= -1;
+				this.listOfBullets[i][5] *= -1;
 			}
 			// if (!this.bulletGoingUp) {
 			// 	this.YTrajectory *= -1;
@@ -296,10 +296,11 @@ var level1DefenderColor = "red";
 
 //////Each Defender's chance of shooting
 var middleLevel3ChanceOfShooting = 0.02;
-var outerLevel3ChanceOfShooting = 0.09;
+var outerLevel3ChanceOfShooting = 0.005;
 var middleLevel2ChanceOfShooting = 0.005;
 var outerLevel2ChanceOfShooting = 0.002;
 var level1ChanceOfShooting = 0.015;
+
 //////Defender1 (closest to enemy wall)x level 3 middle
 var defender1Xpos = canvasWidth - enemyWallWidth - defenderGap - defenderWidth;
 var defender1Ypos = 30;
@@ -463,8 +464,8 @@ Defender3.list();
 //Assigns defenders which defender to look when calculating max or min range of motion
 Defender2.topDefender = Defender1;
 Defender3.bottomDefender = Defender1;
-Defender5.topDefender = Defender4;
-Defender6.bottomDefender = Defender4;
+// Defender5.topDefender = Defender4;
+// Defender6.bottomDefender = Defender4;
 
 
 //Variables used to bypass keyboard studder/rappid fire
