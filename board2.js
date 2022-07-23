@@ -1,7 +1,7 @@
 var canvas, context;
 canvas = document.getElementById('gameBoard');
 context = canvas.getContext("2d");
-canvas.width = 1550
+canvas.width = 1750
 canvas.height = 500
 const canvasWidth = canvas.width;
 const canvasHeight = canvas.height;
@@ -101,7 +101,7 @@ class Defender {
 				}
 				}			
 		else if (levelArray == level3Defenders){
-			if (this.middleDefender == true) { //Level 3 middle defender bullet stats
+			if (this.middleDefender) { //Level 3 middle defender bullet stats
 				this.bulletX = 0;
 				this.bulletY = 0;
 				this.XTrajectory = 3;
@@ -136,37 +136,41 @@ class Defender {
 		if (this.levelArray == level1Defenders && this.health > 0 && Math.random() < this.chance) {
 			canShoot = true;
 			}
-		else if (level1Defenders.length == 0 && this.levelArray == level2Defenders && this.health > 0 && Math.random() < this.chance){
+		else if (level1Defenders.length == 0 && this.levelArray == level2Defenders && this.health > 0){
 			canShoot = true;
 			}
-		else if (level2Defenders.length == 0 && this.levelArray == level3Defenders && this.health > 0 && Math.random() < this.chance){
+		else if (level2Defenders.length == 0 && this.levelArray == level3Defenders && this.health > 0){
 			canShoot = true;
 			}
 		return canShoot;
 	}
 	shoot() {
 		if (this.canShoot()) {
-			if (this.levelArray == level1Defenders) {
+			if (this.levelArray == level1Defenders && Math.random()) {
 				this.listOfBullets.push([this.xpos, this.ypos + (this.height / 2), this.bulletWidth, this.bulletHeight, this.bulletHealth, this.YTrajectory, this.bouncing, this.XTrajectory])	
 			}
 			else if (this.levelArray == level2Defenders) {
-				if (this.middleDefender == true) { //level 2 middle
+				if (this.middleDefender) { //level 2 middle
 					if (Math.random() < this.chance){ //shoots from top of Defender4
-						this.listOfBullets.push([this.xpos, this.ypos, this.bulletWidth, this.bulletHeight, this.YTrajectory, this.bouncing, this.XTrajectory])	
+						this.listOfBullets.push([this.xpos, this.ypos, this.bulletWidth, this.bulletHeight, this.bulletHealth, this.YTrajectory, this.bouncing, this.XTrajectory])	
 						}
 					else if (Math.random() < this.chance) { //shoots from middle of defender4
-						this.listOfBullets.push([this.xpos, this.ypos + (this.height / 2), this.bulletWidth, this.bulletHeight, this.YTrajectory, this.bouncing, this.XTrajectory])	
+						this.listOfBullets.push([this.xpos, this.ypos + (this.height / 2), this.bulletWidth, this.bulletHeight, this.bulletHealth, this.YTrajectory, this.bouncing, this.XTrajectory])	
 						}
 					if (Math.random() < this.chance) {
-						this.listOfBullets.push([this.xpos, this.ypos + this.height, this.bulletWidth, this.bulletHeight, this.YTrajectory, this.bouncing, this.XTrajectory])	
+						this.listOfBullets.push([this.xpos, this.ypos + this.height, this.bulletWidth, this.bulletHeight, this.bulletHealth, this.YTrajectory, this.bouncing, this.XTrajectory])	
 						}			
 					}
 				else if (Math.random() < this.chance) { //level 2 outer
-					this.listOfBullets.push([this.xpos, this.ypos + (this.height / 2), this.bulletWidth, this.bulletHeight, this.bulletHealth, this.bouncing, this.XTrajectory])
+					let buffer = 0;
+					if (this.ypos + this.bulletHeight >= canvasHeight) { //fixes bullets getting caught in bottom of screen
+						buffer = this.ypos - (canvasHeight - this.bulletHeight);
+						}	
+					this.listOfBullets.push([this.xpos, this.ypos - buffer, this.bulletWidth, this.bulletHeight, this.bulletHealth, this.YTrajectory, this.bouncing, this.XTrajectory])
 					}									
 				}
 			else {
-				if (this.middleDefender == true) { //level 3 middle
+				if (this.middleDefender) { //level 3 middle
 					if (Math.random() < this.chance){ //shoots from top of Defender1
 						this.listOfBullets.push([this.xpos, this.ypos, this.bulletWidth, this.bulletHeight, this.bulletHealth, this.YTrajectory, this.bouncing, this.XTrajectory -2])	
 						this.listOfBullets.push([this.xpos, this.ypos + (this.height / 3), this.bulletWidth, this.bulletHeight, this.bulletHealth, this.YTrajectory, this.bouncing, this.XTrajectory - 1])
@@ -236,18 +240,12 @@ class Defender {
 					context.fillStyle = this.bulletColor;
 					context.fillRect(this.listOfBullets[i][0], this.listOfBullets[i][1], this.bulletWidth, this.bulletHeight);												
 				}					
-				
-
-
-
-	
 			}
 		}
 	list() { //puts defender into array of all defenders and an array with other defenders of the same level
 		defenders.push(this);
 		this.levelArray.push(this);
 	}
-
 	move() { 
 
 		if (this.topDefender != "none" && this.topDefender.health > 0) {
@@ -306,7 +304,7 @@ var playerCannonballColor = "black";
 var playerCannonballspeed = 4;
 var shootInterval = 39 ; //Number of frames before player can shoot again. EX. At 60 fps, 30 frames would be half a second.
 var framesElapsedSinceShot = 0; // Frames since last player generated Cannonball
-var basicCannonballDamage = -20; 
+var basicCannonballDamage = -500; 
 
 //Enemy Wall Health variables
 var EnemyWallHealth = 600;
@@ -324,9 +322,9 @@ var level1DefenderColor = "red";
 
 //////Each Defender's chance of shooting
 var middleLevel3ChanceOfShooting = 0.09;
-var outerLevel3ChanceOfShooting = 0.044; //original 0.045
+var outerLevel3ChanceOfShooting = 0.022; //original 0.045
 var middleLevel2ChanceOfShooting = 0.005;
-var outerLevel2ChanceOfShooting = 0.2;
+var outerLevel2ChanceOfShooting = 0.011;
 var level1ChanceOfShooting = 0.015;
 
 //////Defender1 (closest to enemy wall)x level 3 middle
@@ -477,14 +475,14 @@ var Defender5 = new Defender(defender5Xpos, defender5Ypos, defender5YTopRange, d
 Defender5.list();
 var Defender6 = new Defender(defender6Xpos, defender6Ypos, defender6YTopRange, defender6YBottomRange, defender6Width,defender6Height,defender6Color,defender6Speed,defender6Health,false,true, defender6TopDefender, defender6BottomDefender, level2Defenders, outerLevel2ChanceOfShooting);
 Defender6.list();
-var Defender7 = new Defender(defender7Xpos, defender7Ypos, defender7YTopRange, defender7YBottomRange, defenderWidth,defender7Height,defender7Color,defender7Speed,defender7Health,true,true, defender7TopDefender, defender7BottomDefender, level1Defenders, level1ChanceOfShooting);
-Defender7.list();
-var Defender8 = new Defender(defender8Xpos, defender8Ypos, defender8YTopRange, defender8YBottomRange, defenderWidth,defender8Height,defender8Color,defender8Speed,defender8Health,true,true, defender8TopDefender, defender8BottomDefender, level1Defenders, level1ChanceOfShooting);
-Defender8.list();
-var Defender9 = new Defender(defender9Xpos, defender9Ypos, defender9YTopRange, defender9YBottomRange, defenderWidth,defender9Height,defender9Color,defender9Speed,defender9Health,true,true, defender9TopDefender, defender9BottomDefender, level1Defenders, level1ChanceOfShooting);
-Defender9.list();
-var Defender10 = new Defender(defender10Xpos, defender10Ypos, defender10YTopRange, defender10YBottomRange, defenderWidth,defender10Height,defender10Color,defender10Speed,defender10Health,true,true, defender10TopDefender, defender10BottomDefender, level1Defenders, level1ChanceOfShooting);
-Defender10.list();
+// var Defender7 = new Defender(defender7Xpos, defender7Ypos, defender7YTopRange, defender7YBottomRange, defenderWidth,defender7Height,defender7Color,defender7Speed,defender7Health,true,true, defender7TopDefender, defender7BottomDefender, level1Defenders, level1ChanceOfShooting);
+// Defender7.list();
+// var Defender8 = new Defender(defender8Xpos, defender8Ypos, defender8YTopRange, defender8YBottomRange, defenderWidth,defender8Height,defender8Color,defender8Speed,defender8Health,true,true, defender8TopDefender, defender8BottomDefender, level1Defenders, level1ChanceOfShooting);
+// Defender8.list();
+// var Defender9 = new Defender(defender9Xpos, defender9Ypos, defender9YTopRange, defender9YBottomRange, defenderWidth,defender9Height,defender9Color,defender9Speed,defender9Health,true,true, defender9TopDefender, defender9BottomDefender, level1Defenders, level1ChanceOfShooting);
+// Defender9.list();
+// var Defender10 = new Defender(defender10Xpos, defender10Ypos, defender10YTopRange, defender10YBottomRange, defenderWidth,defender10Height,defender10Color,defender10Speed,defender10Health,true,true, defender10TopDefender, defender10BottomDefender, level1Defenders, level1ChanceOfShooting);
+// Defender10.list();
 
 
 
@@ -649,7 +647,6 @@ function trackPlayerCannonballs(defenders, cannonballs, cannonballSize, cannonba
 							if (detectCollision(cannonballs[c][0], cannonballs[c][1], cannonballSize, cannonballSize, defenders[d].listOfBullets[b][0], defenders[d].listOfBullets[b][1], defenders[d].bulletWidth, defenders[d].bulletHeight)) {
 								//Checks for collision between level1 bullets and player cannonballs
 								playerPoints += defenders[d].destroyPointsGained; 
-								console.log("3")    
 								defenders[d].listOfBullets.splice(b,1);	
 								cannonballs[c][2] -= 1;
 								if (cannonballs[c][2] == 0) {
