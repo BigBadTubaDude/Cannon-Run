@@ -470,14 +470,14 @@ var Defender5 = new Defender(defender5Xpos, defender5Ypos, defender5YTopRange, d
 Defender5.list();
 var Defender6 = new Defender(defender6Xpos, defender6Ypos, defender6YTopRange, defender6YBottomRange, defender6Width,defender6Height,defender6Color,defender6Speed,defender6Health,false,true, defender6TopDefender, defender6BottomDefender, level2Defenders, outerLevel2ChanceOfShooting);
 Defender6.list();
-// var Defender7 = new Defender(defender7Xpos, defender7Ypos, defender7YTopRange, defender7YBottomRange, defenderWidth,defender7Height,defender7Color,defender7Speed,defender7Health,true,true, defender7TopDefender, defender7BottomDefender, level1Defenders, level1ChanceOfShooting);
-// Defender7.list();
-// var Defender8 = new Defender(defender8Xpos, defender8Ypos, defender8YTopRange, defender8YBottomRange, defenderWidth,defender8Height,defender8Color,defender8Speed,defender8Health,true,true, defender8TopDefender, defender8BottomDefender, level1Defenders, level1ChanceOfShooting);
-// Defender8.list();
-// var Defender9 = new Defender(defender9Xpos, defender9Ypos, defender9YTopRange, defender9YBottomRange, defenderWidth,defender9Height,defender9Color,defender9Speed,defender9Health,true,true, defender9TopDefender, defender9BottomDefender, level1Defenders, level1ChanceOfShooting);
-// Defender9.list();
-// var Defender10 = new Defender(defender10Xpos, defender10Ypos, defender10YTopRange, defender10YBottomRange, defenderWidth,defender10Height,defender10Color,defender10Speed,defender10Health,true,true, defender10TopDefender, defender10BottomDefender, level1Defenders, level1ChanceOfShooting);
-// Defender10.list();
+var Defender7 = new Defender(defender7Xpos, defender7Ypos, defender7YTopRange, defender7YBottomRange, defenderWidth,defender7Height,defender7Color,defender7Speed,defender7Health,true,true, defender7TopDefender, defender7BottomDefender, level1Defenders, level1ChanceOfShooting);
+Defender7.list();
+var Defender8 = new Defender(defender8Xpos, defender8Ypos, defender8YTopRange, defender8YBottomRange, defenderWidth,defender8Height,defender8Color,defender8Speed,defender8Health,true,true, defender8TopDefender, defender8BottomDefender, level1Defenders, level1ChanceOfShooting);
+Defender8.list();
+var Defender9 = new Defender(defender9Xpos, defender9Ypos, defender9YTopRange, defender9YBottomRange, defenderWidth,defender9Height,defender9Color,defender9Speed,defender9Health,true,true, defender9TopDefender, defender9BottomDefender, level1Defenders, level1ChanceOfShooting);
+Defender9.list();
+var Defender10 = new Defender(defender10Xpos, defender10Ypos, defender10YTopRange, defender10YBottomRange, defenderWidth,defender10Height,defender10Color,defender10Speed,defender10Health,true,true, defender10TopDefender, defender10BottomDefender, level1Defenders, level1ChanceOfShooting);
+Defender10.list();
 
 
 
@@ -495,8 +495,7 @@ var spaceKeyPress = false;
 var upKeyPress = false;
 var downKeyPress = false;
 
-var paused = false;
-
+var paused = true
 // while (paused) {
 
 
