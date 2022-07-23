@@ -1,7 +1,7 @@
 var canvas, context;
 canvas = document.getElementById('gameBoard');
 context = canvas.getContext("2d");
-canvas.width = 1750
+canvas.width = 1700
 canvas.height = 500
 const canvasWidth = canvas.width;
 const canvasHeight = canvas.height;
@@ -201,7 +201,7 @@ class Defender {
 		for (var i = 0; i < this.listOfBullets.length; i++) {
 			if (this.listOfBullets[i][6]) { //if bouncing	
 				if (this.listOfBullets[i][0] < this.bouncingDistance) {
-					this.listOfBullets[i][0] += (this.listOfBullets[i][7]) - Math.ceil(((((this.bouncingDistance - this.listOfBullets[i][0]) / this.bouncingDistance) - 1) * -1) * (this.listOfBullets[i][7]) / 2);
+					this.listOfBullets[i][0] += (this.listOfBullets[i][7]) + Math.ceil(((((this.bouncingDistance - this.listOfBullets[i][0]) / this.bouncingDistance) - 1) * -1) * (this.listOfBullets[i][7]) / 2);
 					}
 				else if (this.listOfBullets[i][0] > this.bouncingDistance[i] / 3){
 					this.listOfBullets[i][0] -= (this.listOfBullets[i][7]) + Math.ceil(((((this.bouncingDistance - this.listOfBullets[i][0]) / this.bouncingDistance) - 1) * -1) * (this.listOfBullets[i][7]) / 2);
@@ -225,7 +225,7 @@ class Defender {
 					this.listOfBullets.splice(i,1);
 					}
 				else {
-					this.listOfBullets[i][6] = true; //it is now bouncing
+					this.listOfBullets[i][6] = true; //it is now bouncing off of player
 					this.listOfBullets[i][0] = playerXPos + playerWidth + this.listOfBullets[i][7];						
 					context.fillStyle = this.bulletColor;
 					context.fillRect(this.listOfBullets[i][0], this.listOfBullets[i][1], this.bulletWidth, this.bulletHeight);							
@@ -259,8 +259,6 @@ class Defender {
 			this.yMinRange = this.aloneYMinRange;
 			this.yMaxRange = this.aloneYMaxRange;
 		}
-
-
 		if (this.goingUp){
 			this.ypos -= this.speed;
 			if (this.ypos <= this.yMaxRange) //swaps direction if at outer range
@@ -276,10 +274,6 @@ class Defender {
 		context.fillRect(this.xpos, this.ypos, this.width, this.height);
 		}
 }
-
-
-
-
 //Player wall variables
 var WallXPos = 0;
 var WallYPos = 0;
@@ -323,8 +317,8 @@ var level1DefenderColor = "red";
 //////Each Defender's chance of shooting
 var middleLevel3ChanceOfShooting = 0.09;
 var outerLevel3ChanceOfShooting = 0.022; //original 0.045
-var middleLevel2ChanceOfShooting = 0.005;
-var outerLevel2ChanceOfShooting = 0.011;
+var middleLevel2ChanceOfShooting = 0.025;
+var outerLevel2ChanceOfShooting = 0.01;
 var level1ChanceOfShooting = 0.015;
 
 //////Defender1 (closest to enemy wall)x level 3 middle
@@ -475,14 +469,14 @@ var Defender5 = new Defender(defender5Xpos, defender5Ypos, defender5YTopRange, d
 Defender5.list();
 var Defender6 = new Defender(defender6Xpos, defender6Ypos, defender6YTopRange, defender6YBottomRange, defender6Width,defender6Height,defender6Color,defender6Speed,defender6Health,false,true, defender6TopDefender, defender6BottomDefender, level2Defenders, outerLevel2ChanceOfShooting);
 Defender6.list();
-// var Defender7 = new Defender(defender7Xpos, defender7Ypos, defender7YTopRange, defender7YBottomRange, defenderWidth,defender7Height,defender7Color,defender7Speed,defender7Health,true,true, defender7TopDefender, defender7BottomDefender, level1Defenders, level1ChanceOfShooting);
-// Defender7.list();
-// var Defender8 = new Defender(defender8Xpos, defender8Ypos, defender8YTopRange, defender8YBottomRange, defenderWidth,defender8Height,defender8Color,defender8Speed,defender8Health,true,true, defender8TopDefender, defender8BottomDefender, level1Defenders, level1ChanceOfShooting);
-// Defender8.list();
-// var Defender9 = new Defender(defender9Xpos, defender9Ypos, defender9YTopRange, defender9YBottomRange, defenderWidth,defender9Height,defender9Color,defender9Speed,defender9Health,true,true, defender9TopDefender, defender9BottomDefender, level1Defenders, level1ChanceOfShooting);
-// Defender9.list();
-// var Defender10 = new Defender(defender10Xpos, defender10Ypos, defender10YTopRange, defender10YBottomRange, defenderWidth,defender10Height,defender10Color,defender10Speed,defender10Health,true,true, defender10TopDefender, defender10BottomDefender, level1Defenders, level1ChanceOfShooting);
-// Defender10.list();
+var Defender7 = new Defender(defender7Xpos, defender7Ypos, defender7YTopRange, defender7YBottomRange, defenderWidth,defender7Height,defender7Color,defender7Speed,defender7Health,true,true, defender7TopDefender, defender7BottomDefender, level1Defenders, level1ChanceOfShooting);
+Defender7.list();
+var Defender8 = new Defender(defender8Xpos, defender8Ypos, defender8YTopRange, defender8YBottomRange, defenderWidth,defender8Height,defender8Color,defender8Speed,defender8Health,true,true, defender8TopDefender, defender8BottomDefender, level1Defenders, level1ChanceOfShooting);
+Defender8.list();
+var Defender9 = new Defender(defender9Xpos, defender9Ypos, defender9YTopRange, defender9YBottomRange, defenderWidth,defender9Height,defender9Color,defender9Speed,defender9Health,true,true, defender9TopDefender, defender9BottomDefender, level1Defenders, level1ChanceOfShooting);
+Defender9.list();
+var Defender10 = new Defender(defender10Xpos, defender10Ypos, defender10YTopRange, defender10YBottomRange, defenderWidth,defender10Height,defender10Color,defender10Speed,defender10Health,true,true, defender10TopDefender, defender10BottomDefender, level1Defenders, level1ChanceOfShooting);
+Defender10.list();
 
 
 
