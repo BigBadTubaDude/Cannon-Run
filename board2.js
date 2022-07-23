@@ -6,7 +6,8 @@ canvas.height = 500
 const canvasWidth = canvas.width;
 const canvasHeight = canvas.height;
 canvas.style.background = "rgb(200,200,200)";
-setInterval(gameLoop, 1000/60) //Redraws at 60 fps
+var gameLoopRefreshID = setInterval(gameLoop, 1000/60) //Redraws at 60 fps
+
 
 
 //Arrays used to keep track of each type of projectile. Each item is an array with at least 2 items as x and y coordinates. Additional array items are noted
@@ -494,19 +495,26 @@ var spaceKeyPress = false;
 var upKeyPress = false;
 var downKeyPress = false;
 
+var paused = false;
+
+// while (paused) {
 
 
+// }
 
 
 
 //Run Game
 function gameLoop() {
 	//Clears board for next frame draw
+	if (!paused){
 	context.clearRect(0, 0, canvasWidth, canvasHeight);
 
 	//Listens for key strokes and key releases
 	document.addEventListener('keydown', movePlayer, false);
-	document.addEventListener('keyup', keyRelease, false)
+	document.addEventListener('keyup', keyRelease, false);
+	document.addEventListener('keydown', pauseGame, false);
+	document.addEventListener('keydown', unpauseGame, true);
 
 	//Creates player
 	createPlayer(playerXPos, playerYPos, playerWidth, playerHeight,playerColor);
@@ -526,7 +534,12 @@ function gameLoop() {
 	///////Display scores and cards under canvas
 
 	//Displays remaining health of player's and enemy's wall
-	displayStats();
+	displayStats();		
+		}
+	else {
+		document.addEventListener('keydown', unpauseGame, true);
+	} 
+
 	}
 
 
@@ -721,7 +734,18 @@ function detectCollision(item1X, item1Y, item1Width, item1Height, item2X, item2Y
 
 
 //Player movement functions
-
+function pauseGame(e) {
+	if (e.keyCode == 80) {
+		paused = true;
+	}
+}
+function unpauseGame(e) {
+	if (e.keyCode == 85) {
+		console.log("foo")
+		paused = false;
+	}
+	
+}
 function movePlayer(e) {
 	e.preventDefault();
 	if ((e.keyCode == 38 || e.keyCode == 87) && playerYPos >= 0) { // up move
@@ -745,21 +769,20 @@ function makeMovementSmooth() { //This works in conjenctions with downKeyPress =
 	}
 function keyRelease(e) {
 	if (e.keyCode ==  40 || e.keyCode == 83) {
-	  downKeyPress = false;
-	 }
+	  	downKeyPress = false;
+	 	}
 	if (e.keyCode == 38 || e.keyCode == 87) {
-	  upKeyPress = false;
-	  }
+	  	upKeyPress = false;
+	  	}
 	if (e.keyCode == 37 || e.keyCode == 65) {
-	  leftKeyPress = false;
-	  }
+	  	leftKeyPress = false;
+	  	}
 	if (e.keyCode == 39 || e.keyCode == 68) {
-	  rightKeyPress = false;
-	  }
+	  	rightKeyPress = false;
+	  	}
 	if (e.keyCode == 32)
 		spaceKeyPress = false
-	}
-
+		}
 
 
 
