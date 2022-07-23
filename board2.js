@@ -453,7 +453,7 @@ var barrier2Color = "grey";
 var Barrier1 = new Barrier(barrier1XPos, barrierWidth, barrier1Color);
 Barrier1.list(barriers);
 var Barrier2 = new Barrier(barrier2XPos, barrierWidth, barrier2Color);
-Barrier1.list(barriers);
+Barrier2.list(barriers);
 
 //goingUp is a boolean that tells if defender is going up or down. Boolean is swapped once it reaches the outer range
 //////////////Initialize Structures
@@ -470,14 +470,14 @@ var Defender5 = new Defender(defender5Xpos, defender5Ypos, defender5YTopRange, d
 Defender5.list();
 var Defender6 = new Defender(defender6Xpos, defender6Ypos, defender6YTopRange, defender6YBottomRange, defender6Width,defender6Height,defender6Color,defender6Speed,defender6Health,false,true, defender6TopDefender, defender6BottomDefender, level2Defenders, outerLevel2ChanceOfShooting);
 Defender6.list();
-var Defender7 = new Defender(defender7Xpos, defender7Ypos, defender7YTopRange, defender7YBottomRange, defenderWidth,defender7Height,defender7Color,defender7Speed,defender7Health,true,true, defender7TopDefender, defender7BottomDefender, level1Defenders, level1ChanceOfShooting);
-Defender7.list();
-var Defender8 = new Defender(defender8Xpos, defender8Ypos, defender8YTopRange, defender8YBottomRange, defenderWidth,defender8Height,defender8Color,defender8Speed,defender8Health,true,true, defender8TopDefender, defender8BottomDefender, level1Defenders, level1ChanceOfShooting);
-Defender8.list();
-var Defender9 = new Defender(defender9Xpos, defender9Ypos, defender9YTopRange, defender9YBottomRange, defenderWidth,defender9Height,defender9Color,defender9Speed,defender9Health,true,true, defender9TopDefender, defender9BottomDefender, level1Defenders, level1ChanceOfShooting);
-Defender9.list();
-var Defender10 = new Defender(defender10Xpos, defender10Ypos, defender10YTopRange, defender10YBottomRange, defenderWidth,defender10Height,defender10Color,defender10Speed,defender10Health,true,true, defender10TopDefender, defender10BottomDefender, level1Defenders, level1ChanceOfShooting);
-Defender10.list();
+// var Defender7 = new Defender(defender7Xpos, defender7Ypos, defender7YTopRange, defender7YBottomRange, defenderWidth,defender7Height,defender7Color,defender7Speed,defender7Health,true,true, defender7TopDefender, defender7BottomDefender, level1Defenders, level1ChanceOfShooting);
+// Defender7.list();
+// var Defender8 = new Defender(defender8Xpos, defender8Ypos, defender8YTopRange, defender8YBottomRange, defenderWidth,defender8Height,defender8Color,defender8Speed,defender8Health,true,true, defender8TopDefender, defender8BottomDefender, level1Defenders, level1ChanceOfShooting);
+// Defender8.list();
+// var Defender9 = new Defender(defender9Xpos, defender9Ypos, defender9YTopRange, defender9YBottomRange, defenderWidth,defender9Height,defender9Color,defender9Speed,defender9Health,true,true, defender9TopDefender, defender9BottomDefender, level1Defenders, level1ChanceOfShooting);
+// Defender9.list();
+// var Defender10 = new Defender(defender10Xpos, defender10Ypos, defender10YTopRange, defender10YBottomRange, defenderWidth,defender10Height,defender10Color,defender10Speed,defender10Health,true,true, defender10TopDefender, defender10BottomDefender, level1Defenders, level1ChanceOfShooting);
+// Defender10.list();
 
 
 
@@ -565,17 +565,18 @@ function removeDefendersAndBarriers(level1Defenders, level2Defenders, level3Defe
 		if (level1Defenders[bar].health <= 0) {
 			level1Defenders.splice(bar, 1);
 		}
+
 	}
 	for (var bar = 0; bar < level2Defenders.length; bar++) {
 		if (level2Defenders[bar].health <= 0) {
 			level2Defenders.splice(bar, 1);
 		}		
 	}
-	if (level1Defenders.length == 0) {
+	if (level1Defenders.length == 0 && barriers[0] == Barrier1) {
 		barriers.splice(0, 1);
 	}
 	if (level2Defenders.length == 0) {
-		barriers.splice(1, 1);
+		barriers.splice(0, 1);
 	}
 
 }
