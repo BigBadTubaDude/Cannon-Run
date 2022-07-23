@@ -1,7 +1,7 @@
 
 #statsDisplay {
  	 display: grid;
-  	grid-template-columns: 15% 40% 15% 15% 15%;
+  	grid-template-columns: 15% 30% 20% 20% 15%;
 	width: 1700px;
 	text-align: center;
 }
@@ -32,8 +32,12 @@
 	font-size: 1.05em;
 	line-height: 1.4;
 }
-#upgradesAndCards {
+#cards {
 	display: grid;
 	grid-template-columns: 50% 50%;
 	grid-template-rows: repeat(2, 45px);
+}
+#cards img {
+	height: 150px;
+	width: 125px;
 }
