@@ -18,12 +18,51 @@ var level1Defenders = [];
 var level2Defenders = [];
 var level3Defenders = [];
 var barriers = [];
-var shieldActive = false; // true when shield is in use, false when it runs out of health
+// true when shield is in use, false when it runs out of health
 // var defenderBulletArrays = [level1DefenderBullets, level2Defenders, level3Defenders]
 
 
 
 //////////////////////////////////////CLASSES
+class Turret {
+	constructor(xpos, ypos, width, height, color, health, cannonballSpeed) {
+		this.xpos = xpos;
+		this.ypos = ypos;
+		this.width = width;
+		this.height = height;
+		this.health = health;
+		this.color = color;
+		this.cannonballSpeed = cannonballSpeed - 1;
+	}
+	draw(context) {
+		if (turretActive) {
+			context.fillStyle = this.color;
+			context.fillRect(this.xpos, this.ypos, this.width, this.height);			
+			}		
+	}
+	activate() {
+		turretActive = true;
+		this.ypos = Math.min(Math.ceil(Math.random() * canvasHeight - 1), canvasHeight - this.height - 5);
+		}
+	deactivate() {
+		turretActive = false;
+		// this.ypos = this.offScreenY;
+	}
+	shoot() {
+		if (turretActive ) {
+
+		}
+	}
+	drawAndCheckHealthOfTurret(context) { //Brings turret to screen when activated and deactivates it when it runs out of health
+		if (turretActive && this.health > 0) { 
+			this.draw(context);			 
+		}
+		else {
+			this.deactivate();
+			}	
+		}
+	}
+
 class Shield {
 	constructor(xpos, ypos, width, height, speed, health, color) {
 		this.xpos = xpos;
@@ -34,7 +73,7 @@ class Shield {
 		this.speed = speed;
 		this.health = health;
 		this.color = color;
-		this.offScreenY = -300;
+		// this.offScreenY = -300;
 		}
 	draw(context) {
 		if (shieldActive) {
@@ -48,7 +87,7 @@ class Shield {
 		}
 	deactivate() {
 		shieldActive = false;
-		this.ypos = this.offScreenY;
+		// this.ypos = this.offScreenY;
 	}
 	moveShield(context) { //Brings shield to screen when activated and deactivates it when it runs out of health
 		if (shieldActive && this.health > 0) { 
@@ -288,14 +327,37 @@ class Defender {
 					this.listOfBullets.splice(i,1);
 					Shield1.health += this.bulletDamage;
 					}
-				else {
+				else if (!this.listOfBullets[i][6]){ // if not already bouncing from player
 					this.listOfBullets[i][6] = true; //it is now bouncing off of shield
-					this.listOfBullets[i][0] = Shield1.xpos + Shield1.width + this.listOfBullets[i][7];						
+					this.listOfBullets[i][0] = Shield1.xpos + Shield1.width + this.listOfBullets[i][7];											
+					Shield1.health += this.bulletDamage / 6; // unlike bouncing off player, bouncing off shield does a little damage
 					context.fillStyle = this.bulletColor;
-					Shield1.health += this.bulletDamage / 8; // unlike bouncing off player, bouncing off shield does a little damage
 					context.fillRect(this.listOfBullets[i][0], this.listOfBullets[i][1], this.bulletWidth, this.bulletHeight);							
+					}
+				else { //if it is bouncing and it hits the shield, do nothing but draw
+					context.fillStyle = this.bulletColor;
+					context.fillRect(this.listOfBullets[i][0], this.listOfBullets[i][1], this.bulletWidth, this.bulletHeight);
 					}											
 				}	
+			else if (turretActive && detectCollision(this.listOfBullets[i][0],this.listOfBullets[i][1],this.listOfBullets[i][2],this.listOfBullets[i][3],Turret1.xpos,Turret1.ypos, Turret1.width, Turret1.height)) {
+				//Detects collision with Turret 
+				if (this.levelArray == level1Defenders || this.middleDefender == true) {
+					playerPoints += Math.ceil(this.catchPointsGained / 2);
+					this.listOfBullets.splice(i,1);
+					Turret1.health += this.bulletDamage;
+					}
+				else if (!this.listOfBullets[i][6]){ // if not already bouncing from player
+					this.listOfBullets[i][6] = true; //it is now bouncing off of shield
+					this.listOfBullets[i][0] = Turret1.xpos + Turret1.width + this.listOfBullets[i][7];											
+					Turret1.health += this.bulletDamage / 6; // unlike bouncing off player, bouncing off shield does a little damage
+					context.fillStyle = this.bulletColor;
+					context.fillRect(this.listOfBullets[i][0], this.listOfBullets[i][1], this.bulletWidth, this.bulletHeight);							
+					}
+				else { //if it is bouncing and it hits the Turret, do nothing but draw
+					context.fillStyle = this.bulletColor;
+					context.fillRect(this.listOfBullets[i][0], this.listOfBullets[i][1], this.bulletWidth, this.bulletHeight);
+					}											
+				}				
 			else if (detectCollision(this.listOfBullets[i][0], this.listOfBullets[i][1], this.bulletWidth, this.bulletHeight, 0, 0, WallWidth, canvasHeight)) {
 				//Detects collision with player wall
 				WallHealth += this.bulletDamage;
@@ -364,6 +426,7 @@ var playerCannonballColor = "black";
 var playerCannonballspeed = 4;
 var shootInterval = 39 ; //Number of frames before player can shoot again. EX. At 60 fps, 30 frames would be half a second.
 var framesElapsedSinceShot = 0; // Frames since last player generated Cannonball
+var framesElapsedSinceTurretShot = 0;
 var basicCannonballDamage = -500; 
 
 
@@ -414,8 +477,10 @@ for (var i = 0; i < loopLength; i++) { //randomizes the array so player will get
 	cardsUnavailable.push(unrandomizedArray[randomNum]) ;
 	unrandomizedArray.splice(randomNum, 1);
 }
-var CardTurretAvailable = false;
+var CardTurretAvailable = false; //When true, the player may buy individual uses of each card
 var CardShieldAvailable = false;
+var shieldActive = false; // When true, the card is currently in use on the field
+var turretActive = false;
 
 //Shield Card Variables
 var shieldXPos = WallWidth + playerWidth + 100;
@@ -426,6 +491,20 @@ var shieldMoveSpeed = 0.8;
 var shieldHealth = 500;
 var shieldColor = "blue";
 var shieldCostPerUse = 400;
+
+//Turret Card Variables
+var turretXPos = 0;
+var turretYPos = 0; // Will be randomized
+var turretWidth =  WallWidth + playerWidth + 30;
+var turretHeight = 40;
+var turretHealth = 300;
+var turretBulletWidth = 10;
+var turretBulletHeight = 50;
+var turretBulletSpeed; playerCannonballspeed - 2;
+var turretShootInterval = 50;
+var turretColor = "blue";
+var turretCostPerUse = 300;
+
 
 //Enemy Wall Health variables
 var EnemyWallHealth = 600;
@@ -615,6 +694,9 @@ Defender6.bottomDefender = Defender4;
 var Shield1 = new Shield(shieldXPos, shieldYPos, shieldWidth, shieldHeight, shieldMoveSpeed, shieldHealth, shieldColor);
 // Shield1.activate();
 
+////////Turret
+var Turret1 = new Turret(turretXPos, turretYPos, turretWidth, turretHeight, turretColor, turretHealth, turretBulletSpeed);
+// Turret1.activate();
 
 //Variables used to bypass keyboard studder/rappid fire
 var leftKeyPress = false;
@@ -659,6 +741,8 @@ function gameLoop() {
 	//Create Shield
 	Shield1.moveShield(context);
 	///////Display scores and cards under canvas
+	Turret1.drawAndCheckHealthOfTurret(context);
+	// Turrer1.shoot();
 
 	//Displays remaining health of player's and enemy's wall
 	displayStats();		
@@ -775,20 +859,25 @@ function createPlayer(xpos,ypos,width, height, color){
 
 
 //Cannonball Functions
-function createCannonball(playerX, playerY, cannonballHitsCanTake) {
-	cannonballs.push([playerX,playerY + (playerHeight * 0.5) - (cannonballSize * 0.5),cannonballHitsCanTake]);
+function createCannonball(xpos, ypos, cannonballHitsCanTake, cannonballwidth, cannonballheight, shooterHeight) {
+	cannonballs.push([xpos, ypos + (shooterHeight * 0.5) - (cannonballheight * 0.5),cannonballHitsCanTake]);
 	}
 function drawCannonball(xpos, ypos, width, height, color) {
 	context.fillStyle = color;
 	context.fillRect(xpos, ypos, width, height); //This math centers the Cannonball in the players platform
 	}
 function trackPlayerCannonballs(defenders, cannonballs, cannonballSize, cannonballHitsCanTake, barriers, canvasHeight) {
+	//Also Tracks Turret Cannonballs
 	//Increments frames since last shot
 	framesElapsedSinceShot += 1; //counter to tell if player cannon can shoot again yet
-	//allows
+	framesElapsedSinceTurretShot += 1;
 	if (spaceKeyPress && framesElapsedSinceShot >= shootInterval) {
-		createCannonball(playerXPos,playerYPos,cannonballHitsCanTake);
+		createCannonball(playerXPos,playerYPos,cannonballHitsCanTake,cannonballSize, cannonballSize, playerHeight);
 		framesElapsedSinceShot = 0;
+	}
+	if (turretActive && framesElapsedSinceTurretShot >= turretShootInterval){
+		createCannonball(Turret1.xpos,Turret1.ypos, cannonballHitsCanTake, Turret1.cannonballwidth, Turret1.cannonballheight, Turret1.height);
+		framesElapsedSinceTurretShot = 0;		
 	}
 	//Track basic cannonballs shot by player
 	for (var c = 0; c < cannonballs.length; c++) {
@@ -890,6 +979,8 @@ function trackPlayerCannonballs(defenders, cannonballs, cannonballSize, cannonba
 					}	
 				}	 			
 			}
+
+
 		}
 	
 		
@@ -1045,7 +1136,13 @@ function movePlayer(e) { //also for various key actions
 		}
 	if (e.keyCode == 65 && playerPoints >= shieldCostPerUse && CardShieldAvailable && !shieldActive) {
 		Shield1.activate();
+		Shield1.health = shieldHealth;
 		playerPoints -= shieldCostPerUse;
+		}
+	if (e.keyCode == 68 && playerPoints >= turretCostPerUse && CardTurretAvailable && !turretActive) {
+		Turret1.activate();
+		Turret1.health = turretHealth;
+		playerPoints -= turretCostPerUse;
 		}
 	}
 
