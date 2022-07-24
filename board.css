@@ -1,4 +1,8 @@
-
+/* 
+	Author: Coleman Alexander
+	Date: 7/24/2022
+	File: board.css
+*/
 #statsDisplay {
  	 display: grid;
   	grid-template-columns: 15% 30% 20% 20% 15%;
