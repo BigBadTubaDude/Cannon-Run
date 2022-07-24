@@ -18,10 +18,54 @@ var level1Defenders = [];
 var level2Defenders = [];
 var level3Defenders = [];
 var barriers = [];
+var shieldActive = false; // true when shield is in use, false when it runs out of health
 // var defenderBulletArrays = [level1DefenderBullets, level2Defenders, level3Defenders]
 
 
+
 //////////////////////////////////////CLASSES
+class Shield {
+	constructor(xpos, ypos, width, height, speed, health, color) {
+		this.xpos = xpos;
+		this.ypos = ypos;
+		this.yStart = 50;
+		this.width = width;
+		this.height = height;
+		this.speed = speed;
+		this.health = health;
+		this.color = color;
+		this.offScreenY = -300;
+		}
+	draw(context) {
+		if (shieldActive) {
+			context.fillStyle = this.color;
+			context.fillRect(this.xpos, this.ypos, this.width, this.height);			
+			}
+		}
+	activate() {
+		shieldActive = true;
+		this.ypos = this.yStart;
+		}
+	deactivate() {
+		shieldActive = false;
+		this.ypos = this.offScreenY;
+	}
+	moveShield(context) { //Brings shield to screen when activated and deactivates it when it runs out of health
+		if (shieldActive && this.health > 0) { 
+			if (this.ypos <= 0 || this.ypos + this.height >= canvasHeight) { //Turns shield around when it gets to the edge
+				this.speed *= -1;
+				}
+			this.ypos += this.speed;
+			this.draw(context);			 
+		}
+		else {
+			this.deactivate();
+		}
+	}		
+}
+
+
+
 class Barrier {
 	constructor(xpos, width, color, level) {
 		this.xpos = xpos;
@@ -36,7 +80,6 @@ class Barrier {
 	list(barriers) {
 		barriers.push(this);
 	}
-
 }
 class Defender {
 	constructor(xpos, ypos,yMaxRange, yMinRange, width, height, color, speed, health, middleDefender, goingUp, topDefender, bottomDefender, levelArray, chanceOfShooting) { 
@@ -72,8 +115,9 @@ class Defender {
 			this.bulletHeight = 10;
 			this.bulletColor = "rgb(255,0,0)"
 			this.bulletDamage = -1;
-			this.destroyPointsGained = 4;
+			this.bulletDestroyPointsGained = 4;
 			this.catchPointsGained = 20;
+			this.defenderDestroyedPointsGained = 100;
 		}
 		else if (levelArray == level2Defenders){ 
 			if (this.middleDefender == true) { //Level 2 middle defender bullet stats
@@ -84,9 +128,10 @@ class Defender {
 				this.bulletWidth = 15;
 				this.bulletHeight = 5;
 				this.bulletColor = "rgb(20,100,255)"
-				this.bulletDamage = -5;
-				this.destroyPointsGained = 8;
-				this.catchPointsGained = 10;				
+				this.bulletDamage = -2;
+				this.bulletDestroyPointsGained = 8;
+				this.catchPointsGained = 10;	
+				this.defenderDestroyedPointsGained = 250;			
 				}
 			else { //Level 2 outer defender bullet stats
 				this.bulletX = 0;
@@ -97,9 +142,10 @@ class Defender {
 				this.bulletHeight = 43;
 				this.bulletHealth = 120;
 				this.bulletColor = "rgb(205, 165,0)"
-				this.bulletDamage = -1;
-				this.destroyPointsGained = 100;
-				}
+				this.bulletDamage = -75;
+				this.bulletDestroyPointsGained = 40;
+				this.defenderDestroyedPointsGained = 120;
+					}
 				}			
 		else if (levelArray == level3Defenders){
 			if (this.middleDefender) { //Level 3 middle defender bullet stats
@@ -110,14 +156,15 @@ class Defender {
 				this.bulletWidth = 15;
 				this.bulletHeight = 7;				
 				this.bulletColor = "rgb(20,100,255)"
-				this.bulletDamage = -3;
-				this.destroyPointsGained = 14;
-				this.catchPointsGained = 12;				
+				this.bulletDamage = -1;
+				this.bulletDestroyPointsGained = 14;
+				this.catchPointsGained = 12;
+				this.defenderDestroyedPointsGained = 400;				
 				}
 			else { //Level 3 outer defender bullet stats
 				this.bulletX = 0;
 				this.bulletY = 0;
-				this.XTrajectory = 6; //2
+				this.XTrajectory = 2; //2
 				this.YTrajectory = 2;
 				if (this == Defender3) {
 					this.YTrajectory *= -1; //top defender bullets start by going up instead of down
@@ -127,7 +174,8 @@ class Defender {
 				this.bulletHealth = 180;				
 				this.bulletColor = "rgb(255,215,0)"
 				this.bulletDamage = -90;
-				this.destroyPointsGained = 200;
+				this.bulletDestroyPointsGained = 60;
+				this.defenderDestroyedPointsGained = 300;
 				}				
 			}					
 		}
@@ -232,11 +280,27 @@ class Defender {
 					context.fillRect(this.listOfBullets[i][0], this.listOfBullets[i][1], this.bulletWidth, this.bulletHeight);							
 					}											
 				}
+
+			else if (shieldActive && detectCollision(this.listOfBullets[i][0],this.listOfBullets[i][1],this.listOfBullets[i][2],this.listOfBullets[i][3],Shield1.xpos,Shield1.ypos, Shield1.width, Shield1.height)) {
+				//Detects collision with Shield 
+				if (this.levelArray == level1Defenders || this.middleDefender == true) {
+					playerPoints += Math.ceil(this.catchPointsGained / 2);
+					this.listOfBullets.splice(i,1);
+					Shield1.health += this.bulletDamage;
+					}
+				else {
+					this.listOfBullets[i][6] = true; //it is now bouncing off of shield
+					this.listOfBullets[i][0] = Shield1.xpos + Shield1.width + this.listOfBullets[i][7];						
+					context.fillStyle = this.bulletColor;
+					Shield1.health += this.bulletDamage / 8; // unlike bouncing off player, bouncing off shield does a little damage
+					context.fillRect(this.listOfBullets[i][0], this.listOfBullets[i][1], this.bulletWidth, this.bulletHeight);							
+					}											
+				}	
 			else if (detectCollision(this.listOfBullets[i][0], this.listOfBullets[i][1], this.bulletWidth, this.bulletHeight, 0, 0, WallWidth, canvasHeight)) {
 				//Detects collision with player wall
 				WallHealth += this.bulletDamage;
 				this.listOfBullets.splice(i,1);								
-				}
+				}						
 			else {
 					context.fillStyle = this.bulletColor;
 					context.fillRect(this.listOfBullets[i][0], this.listOfBullets[i][1], this.bulletWidth, this.bulletHeight);												
@@ -353,6 +417,14 @@ for (var i = 0; i < loopLength; i++) { //randomizes the array so player will get
 var CardTurretAvailable = false;
 var CardShieldAvailable = false;
 
+//Shield Card Variables
+var shieldXPos = WallWidth + playerWidth + 100;
+var shieldYPos = 50;
+var shieldWidth = 20;
+var shieldHeight = 145;
+var shieldMoveSpeed = 0.8;
+var shieldHealth = 150;
+var shieldColor = "blue";
 
 //Enemy Wall Health variables
 var EnemyWallHealth = 600;
@@ -538,7 +610,8 @@ Defender3.bottomDefender = Defender1;
 Defender5.topDefender = Defender4;
 Defender6.bottomDefender = Defender4;
 
-
+var Shield1 = new Shield(shieldXPos, shieldYPos, shieldWidth, shieldHeight, shieldMoveSpeed, shieldHealth, shieldColor);
+Shield1.activate();
 
 
 //Variables used to bypass keyboard studder/rappid fire
@@ -581,6 +654,8 @@ function gameLoop() {
 	//Create Defenders
 	drawMoveShootHealthCheckDefenders(level1Defenders, level2Defenders);
 	removeDefendersAndBarriers(level1Defenders, level2Defenders, level3Defenders, barriers);
+	//Create Shield
+	Shield1.moveShield(context);
 	///////Display scores and cards under canvas
 
 	//Displays remaining health of player's and enemy's wall
@@ -738,7 +813,11 @@ function trackPlayerCannonballs(defenders, cannonballs, cannonballSize, cannonba
 				if (cannonballs[c][0] + cannonballSize >= defenders[d].xpos && (cannonballs[c][0]) <= defenders[d].xpos + defenders[d].width && cannonballs[c][1] <= defenders[d].ypos + defenders[d].height && cannonballs[c][1] + cannonballSize >= defenders[d].ypos) { 
 				//Does cannonball hit a defender?
 						cannonballs.splice(c, 1);
-						defenders[d].health += basicCannonballDamage;
+						if (defenders[d].health + basicCannonballDamage <= 0) { // If defender will be destroyed by this hit, add points to player points
+							playerPoints += defenders[d].defenderDestroyedPointsGained;
+						}
+						defenders[d].health += basicCannonballDamage; 
+
 					}
 
 				else if (defenders[d].listOfBullets.length > 0)	{ 
@@ -747,12 +826,11 @@ function trackPlayerCannonballs(defenders, cannonballs, cannonballSize, cannonba
 						if (defenders[d].levelArray == level1Defenders){
 							if (detectCollision(cannonballs[c][0], cannonballs[c][1], cannonballSize, cannonballSize, defenders[d].listOfBullets[b][0], defenders[d].listOfBullets[b][1], defenders[d].bulletWidth, defenders[d].bulletHeight)) {
 								//Checks for collision between level1 bullets and player cannonballs
-								playerPoints += defenders[d].destroyPointsGained; 
+								playerPoints += defenders[d].bulletDestroyPointsGained; 
 								defenders[d].listOfBullets.splice(b,1);	
 								cannonballs[c][2] -= 1;
 								if (cannonballs[c][2] == 0) {
-									cannonballs.splice(c,1)
-									continue
+									cannonballs.splice(c,1)								
 									}															
 								}
 							}
@@ -760,12 +838,11 @@ function trackPlayerCannonballs(defenders, cannonballs, cannonballSize, cannonba
 							if (defenders[d].middleDefender) {
 								if (detectCollision(cannonballs[c][0], cannonballs[c][1], cannonballSize, cannonballSize, defenders[d].listOfBullets[b][0], defenders[d].listOfBullets[b][1], defenders[d].bulletWidth, defenders[d].bulletHeight)) {
 									//Checks for collision between level 2 middle bullets and player cannonballs
-									playerPoints += defenders[d].destroyPointsGained; 
+									playerPoints += defenders[d].bulletDestroyPointsGained; 
 									defenders[d].listOfBullets.splice(b,1);  
 									cannonballs[c][2] -= 1;
 									if (cannonballs[c][2] == 0) {
-										cannonballs.splice(c,1)
-										continue
+										cannonballs.splice(c,1)										
 										}																	
 									}								
 								}
@@ -775,10 +852,9 @@ function trackPlayerCannonballs(defenders, cannonballs, cannonballSize, cannonba
 									defenders[d].listOfBullets[b][4] +=  basicCannonballDamage;
 									if (defenders[d].listOfBullets[b][4] <= 0) {									
 										defenders[d].listOfBullets.splice(b,1);
-										playerPoints += defenders[d].destroyPointsGained;
+										playerPoints += defenders[d].bulletDestroyPointsGained;
 										}
-									cannonballs.splice(c,1)
-									continue					
+									cannonballs.splice(c,1)														
 									}
 								}
 							}
@@ -786,12 +862,11 @@ function trackPlayerCannonballs(defenders, cannonballs, cannonballSize, cannonba
 							if (defenders[d].middleDefender) {
 								if (detectCollision(cannonballs[c][0], cannonballs[c][1], cannonballSize, cannonballSize, defenders[d].listOfBullets[b][0], defenders[d].listOfBullets[b][1], defenders[d].bulletWidth, defenders[d].bulletHeight)) {
 									//Checks for collision between level 3 middle bullets and player cannonballs
-									playerPoints += defenders[d].destroyPointsGained;    
+									playerPoints += defenders[d].bulletDestroyPointsGained;    
 									defenders[d].listOfBullets.splice(b,1);  
 									cannonballs[c][2] -= 1;
 									if (cannonballs[c][2] == 0) {
-										cannonballs.splice(c,1)
-										continue
+										cannonballs.splice(c,1)										
 										}																	
 									}								
 								}
@@ -801,10 +876,9 @@ function trackPlayerCannonballs(defenders, cannonballs, cannonballSize, cannonba
 									defenders[d].listOfBullets[b][4] +=  basicCannonballDamage;
 									if (defenders[d].listOfBullets[b][4] <= 0) {										
 										defenders[d].listOfBullets.splice(b,1);
-										playerPoints += defenders[d].destroyPointsGained;
+										playerPoints += defenders[d].bulletDestroyPointsGained;
 										}
-									cannonballs.splice(c,1)	
-									continue				
+									cannonballs.splice(c,1)														
 									}
 								}
 							}														
