@@ -8,7 +8,7 @@
 #unlockAndPause {
 	display: grid;
 	grid-template-columns: 50% 50%;
-	grid-template-rows: repeat(3, 45px) 30px repeat(2, 65px);
+	grid-template-rows: repeat(3, 45px) 13px repeat(2, 72px);
 
 }
 #unlockAndPause > h2 {
@@ -46,4 +46,7 @@
 }
 .statBoost {
 	visibility: hidden;
+}
+.jsFilled {
+	font-size: 0.9em;
 }
