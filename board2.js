@@ -25,14 +25,16 @@ var barriers = [];
 
 //////////////////////////////////////CLASSES
 class Turret {
-	constructor(xpos, ypos, width, height, color, health, cannonballSpeed) {
+	constructor(xpos, ypos, width, height, color, health, cannonballSpeed, cannonballWidth, cannonballHeight) {
 		this.xpos = xpos;
 		this.ypos = ypos;
 		this.width = width;
 		this.height = height;
 		this.health = health;
 		this.color = color;
-		this.cannonballSpeed = cannonballSpeed - 1;
+		this.cannonballSpeed = playerCannonballspeed - 2;
+		this.cannonballWidth = cannonballWidth;
+		this.cannonballHeight = cannonballHeight;
 	}
 	draw(context) {
 		if (turretActive) {
@@ -404,13 +406,13 @@ class Defender {
 //Player wall variables
 var WallXPos = 0;
 var WallYPos = 0;
-var WallHealth = 500;
+var WallHealth = 1000;
 var WallWidth = 35;
 var WallColor = "rgb(50,50,50)";
 
 ///////////////////////////PLAYER VARIABLES
 
-var playerPoints = 100000;
+var playerPoints = 100;
 var playerMoveSpeed = 5;
 var playerWidth = 20;
 var playerHeight = 80; //og 80
@@ -498,12 +500,12 @@ var turretYPos = 0; // Will be randomized
 var turretWidth =  WallWidth + playerWidth + 30;
 var turretHeight = 40;
 var turretHealth = 300;
-var turretBulletWidth = 10;
-var turretBulletHeight = 50;
-var turretBulletSpeed; playerCannonballspeed - 2;
-var turretShootInterval = 50;
+var turretCannonballWidth = 10;
+var turretCannonballHeight = 50;
+var turretCannonballSpeed; playerCannonballspeed - 2;
+var turretShootInterval = 120;
 var turretColor = "blue";
-var turretCostPerUse = 300;
+var turretCostPerUse = 400;
 
 
 //Enemy Wall Health variables
@@ -521,8 +523,8 @@ var outerDefenderColor = "green";
 var level1DefenderColor = "red";
 
 //////Each Defender's chance of shooting
-var middleLevel3ChanceOfShooting = 0.09;
-var outerLevel3ChanceOfShooting = 0.022; //original 0.045
+var middleLevel3ChanceOfShooting = 0.07;
+var outerLevel3ChanceOfShooting = 0.01; //original 0.045
 var middleLevel2ChanceOfShooting = 0.025;
 var outerLevel2ChanceOfShooting = 0.01;
 var level1ChanceOfShooting = 0.015;
@@ -695,7 +697,7 @@ var Shield1 = new Shield(shieldXPos, shieldYPos, shieldWidth, shieldHeight, shie
 // Shield1.activate();
 
 ////////Turret
-var Turret1 = new Turret(turretXPos, turretYPos, turretWidth, turretHeight, turretColor, turretHealth, turretBulletSpeed);
+var Turret1 = new Turret(turretXPos, turretYPos, turretWidth, turretHeight, turretColor, turretHealth, turretCannonballSpeed, turretCannonballWidth, turretCannonballHeight);
 // Turret1.activate();
 
 //Variables used to bypass keyboard studder/rappid fire
@@ -734,7 +736,7 @@ function gameLoop() {
 	drawBarriers(barriers, level1Defenders, level2Defenders);
 	//Manages movement of players and projectiles
 	makeMovementSmooth();
-	trackPlayerCannonballs(defenders, cannonballs, cannonballSize, cannonballHitsCanTake, barriers, canvasHeight, playerPoints);
+	trackPlayerCannonballs(defenders, cannonballSize, cannonballHitsCanTake, barriers, canvasHeight, playerPoints);
 	//Create Defenders
 	drawMoveShootHealthCheckDefenders(level1Defenders, level2Defenders);
 	removeDefendersAndBarriers(level1Defenders, level2Defenders, level3Defenders, barriers);
@@ -859,30 +861,36 @@ function createPlayer(xpos,ypos,width, height, color){
 
 
 //Cannonball Functions
-function createCannonball(xpos, ypos, cannonballHitsCanTake, cannonballwidth, cannonballheight, shooterHeight) {
-	cannonballs.push([xpos, ypos + (shooterHeight * 0.5) - (cannonballheight * 0.5),cannonballHitsCanTake]);
+function createCannonball(xpos, ypos, cannonballHitsCanTake, cannonballwidth, cannonballheight, shooterHeight, turret) {
+	cannonballs.push([xpos, ypos,cannonballHitsCanTake, cannonballwidth, cannonballheight, turret]);
 	}
 function drawCannonball(xpos, ypos, width, height, color) {
 	context.fillStyle = color;
-	context.fillRect(xpos, ypos, width, height); //This math centers the Cannonball in the players platform
+	context.fillRect(xpos, ypos, width, height); 
 	}
-function trackPlayerCannonballs(defenders, cannonballs, cannonballSize, cannonballHitsCanTake, barriers, canvasHeight) {
+function trackPlayerCannonballs(defenders, cannonballSize, cannonballHitsCanTake, barriers, canvasHeight) {
 	//Also Tracks Turret Cannonballs
 	//Increments frames since last shot
 	framesElapsedSinceShot += 1; //counter to tell if player cannon can shoot again yet
 	framesElapsedSinceTurretShot += 1;
 	if (spaceKeyPress && framesElapsedSinceShot >= shootInterval) {
-		createCannonball(playerXPos,playerYPos,cannonballHitsCanTake,cannonballSize, cannonballSize, playerHeight);
+		createCannonball(playerXPos,playerYPos + (playerHeight * 0.5) - (cannonballSize * 0.5),cannonballHitsCanTake, cannonballSize, cannonballSize, playerHeight, false);//This math centers the Cannonball in the players platform
 		framesElapsedSinceShot = 0;
 	}
-	if (turretActive && framesElapsedSinceTurretShot >= turretShootInterval){
-		createCannonball(Turret1.xpos,Turret1.ypos, cannonballHitsCanTake, Turret1.cannonballwidth, Turret1.cannonballheight, Turret1.height);
+	if (turretActive && framesElapsedSinceTurretShot >= turretShootInterval) {
+		createCannonball(Turret1.xpos, Turret1.ypos, cannonballHitsCanTake, Turret1.cannonballWidth, Turret1.cannonballHeight, Turret1.height, true);
 		framesElapsedSinceTurretShot = 0;		
 	}
 	//Track basic cannonballs shot by player
 	for (var c = 0; c < cannonballs.length; c++) {
 		//Increment projectiles each frame
-		cannonballs[c][0] += playerCannonballspeed;
+		if (!cannonballs[c][5]){
+			cannonballs[c][0] += playerCannonballspeed;			
+		}
+		else {
+			cannonballs[c][0] += Turret1.cannonballSpeed;			
+		}
+
 		drawCannonball(cannonballs[c][0], cannonballs[c][1], cannonballSize, cannonballSize, playerCannonballColor);
 		//////Collision detection
 		if (barriers.length > 0) {
