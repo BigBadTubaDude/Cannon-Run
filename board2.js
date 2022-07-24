@@ -325,7 +325,7 @@ class Defender {
 			else if (shieldActive && detectCollision(this.listOfBullets[i][0],this.listOfBullets[i][1],this.listOfBullets[i][2],this.listOfBullets[i][3],Shield1.xpos,Shield1.ypos, Shield1.width, Shield1.height)) {
 				//Detects collision with Shield 
 				if (this.levelArray == level1Defenders || this.middleDefender == true) {
-					playerPoints += Math.ceil(this.catchPointsGained / 2);
+					playerPoints += Math.ceil(this.catchPointsGained / 4);
 					this.listOfBullets.splice(i,1);
 					Shield1.health += this.bulletDamage;
 					}
@@ -344,7 +344,7 @@ class Defender {
 			else if (turretActive && detectCollision(this.listOfBullets[i][0],this.listOfBullets[i][1],this.listOfBullets[i][2],this.listOfBullets[i][3],Turret1.xpos,Turret1.ypos, Turret1.width, Turret1.height)) {
 				//Detects collision with Turret 
 				if (this.levelArray == level1Defenders || this.middleDefender == true) {
-					playerPoints += Math.ceil(this.catchPointsGained / 2);
+					playerPoints += Math.ceil(this.catchPointsGained / 4);
 					this.listOfBullets.splice(i,1);
 					Turret1.health += this.bulletDamage;
 					}
@@ -525,8 +525,8 @@ var level1DefenderColor = "red";
 //////Each Defender's chance of shooting
 var middleLevel3ChanceOfShooting = 0.07;
 var outerLevel3ChanceOfShooting = 0.009; //original 0.045
-var middleLevel2ChanceOfShooting = 0.025;
-var outerLevel2ChanceOfShooting = 0.009;
+var middleLevel2ChanceOfShooting = 0.03;
+var outerLevel2ChanceOfShooting = 0.008;
 var level1ChanceOfShooting = 0.018;
 
 //////Defender1 (closest to enemy wall)x level 3 middle
@@ -824,7 +824,7 @@ function displayStats() { // Displays current health of both walls
 	}
 	if (CardShieldAvailable) {
 		document.getElementById("shield").style.visibility = "visible";	
-		document.getElementById("shield").innerHTML = "<h2>Shield(A)</h2><img src='sheild.png'><h3>Cost " + shieldCostPerUse + "</br>press A to use</br>Remaining HP " + Shield1.health + "</h3>";
+		document.getElementById("shield").innerHTML = "<h2>Shield(A)</h2><img src='shield.PNG'><h3>Cost " + shieldCostPerUse + "</br>press A to use</br>Remaining HP " + Shield1.health + "</h3>";
 	}				
 	if (CardTurretAvailable) {
 		document.getElementById("turret").style.visibility = "visible";
