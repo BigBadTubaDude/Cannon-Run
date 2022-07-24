@@ -150,14 +150,14 @@ class Defender {
 		if (this.levelArray == level1Defenders) { //Level 1 defender bullet stats
 			this.bulletX = 0;
 			this.bulletY = 0;
-			this.XTrajectory = 5;
+			this.XTrajectory = 4;
 			this.YTrajectory = 0;
 			this.bulletWidth = 10;
 			this.bulletHeight = 10;
 			this.bulletColor = "rgb(255,0,0)"
-			this.bulletDamage = -1;
+			this.bulletDamage = -1; //negative
 			this.bulletDestroyPointsGained = 4;
-			this.catchPointsGained = 20;
+			this.catchPointsGained = 7;
 			this.defenderDestroyedPointsGained = 100;
 		}
 		else if (levelArray == level2Defenders){ 
@@ -429,7 +429,7 @@ var playerCannonballspeed = 4;
 var shootInterval = 39 ; //Number of frames before player can shoot again. EX. At 60 fps, 30 frames would be half a second.
 var framesElapsedSinceShot = 0; // Frames since last player generated Cannonball
 var framesElapsedSinceTurretShot = 0;
-var basicCannonballDamage = -500; 
+var basicCannonballDamage = -20; 
 
 
 
@@ -515,7 +515,7 @@ var enemyWallXPos = canvasWidth - enemyWallWidth;
 var enemyWallColor = "rgb(30, 110,30)"
 
 ///////////////////Enemy Defender stats (the different bullet trajectory speeds are declared in the Defender class definition)
-var defenderColor = "green"
+
 var defenderGap = 100;
 var defenderWidth = 20;
 var middleDefenderColor = "rgb(10,10,10)";
@@ -600,7 +600,6 @@ var defender6BottomDefender = "none";
 var defender6Color = outerDefenderColor;
 
 //////////////////Level 1 Defenders
-var level1BulletPoints = 4;
 //////Defender7 
 var defender7Xpos = canvasWidth - enemyWallWidth - (defenderGap * 3) - (defenderWidth * 3);
 var defender7Ypos = 150;
@@ -824,9 +823,11 @@ function displayStats() { // Displays current health of both walls
 	}
 	if (CardShieldAvailable) {
 		document.getElementById("shield").style.visibility = "visible";	
-	}
+		document.getElementById("shield").innerHTML = "<h2>Shield(A)</h2><img src='sheild.png'><h3>Cost " + shieldCostPerUse + "</br>press A to use</br>Remaining HP " + Shield1.health + "</h3>";
+	}				
 	if (CardTurretAvailable) {
-		document.getElementById("turret").style.visibility = "visible";	
+		document.getElementById("turret").style.visibility = "visible";
+		document.getElementById("turret").innerHTML = "<h2>Turret(D)</h2><img src='turret.png'><h3>Cost " + turretCostPerUse + "</br>press D to use</br>Remaining HP " + Turret1.health + "</h3>";			
 	}
 }
 function getCurrentDenfendersTotalHealth(defenders) {
