@@ -157,7 +157,7 @@ class Defender {
 			this.bulletColor = "rgb(255,0,0)"
 			this.bulletDamage = -1; //negative
 			this.bulletDestroyPointsGained = 4;
-			this.catchPointsGained = 7;
+			this.catchPointsGained = 6;
 			this.defenderDestroyedPointsGained = 100;
 		}
 		else if (levelArray == level2Defenders){ 
@@ -170,8 +170,8 @@ class Defender {
 				this.bulletHeight = 5;
 				this.bulletColor = "rgb(20,100,255)"
 				this.bulletDamage = -2;
-				this.bulletDestroyPointsGained = 8;
-				this.catchPointsGained = 10;	
+				this.bulletDestroyPointsGained = 7;
+				this.catchPointsGained = 9;	
 				this.defenderDestroyedPointsGained = 250;			
 				}
 			else { //Level 2 outer defender bullet stats
@@ -183,9 +183,9 @@ class Defender {
 				this.bulletHeight = 43;
 				this.bulletHealth = 120;
 				this.bulletColor = "rgb(205, 165,0)"
-				this.bulletDamage = -75;
+				this.bulletDamage = -70;
 				this.bulletDestroyPointsGained = 40;
-				this.defenderDestroyedPointsGained = 120;
+				this.defenderDestroyedPointsGained = 125;
 					}
 				}			
 		else if (levelArray == level3Defenders){
@@ -197,8 +197,8 @@ class Defender {
 				this.bulletWidth = 15;
 				this.bulletHeight = 7;				
 				this.bulletColor = "rgb(20,100,255)"
-				this.bulletDamage = -1;
-				this.bulletDestroyPointsGained = 14;
+				this.bulletDamage = -1.5;
+				this.bulletDestroyPointsGained = 10;
 				this.catchPointsGained = 12;
 				this.defenderDestroyedPointsGained = 400;				
 				}
@@ -426,7 +426,7 @@ var cannonballHitsCanTake = 3;
 var cannonballSize = 33;
 var playerCannonballColor = "black";
 var playerCannonballspeed = 4;
-var shootInterval = 39 ; //Number of frames before player can shoot again. EX. At 60 fps, 30 frames would be half a second.
+var shootInterval = 40 ; //Number of frames before player can shoot again. EX. At 60 fps, 30 frames would be half a second.
 var framesElapsedSinceShot = 0; // Frames since last player generated Cannonball
 var framesElapsedSinceTurretShot = 0;
 var basicCannonballDamage = -20; 
@@ -464,7 +464,7 @@ var newStatCost = 80;
 var newCardCost = 200;
 var sizeBoostCost = 80;
 var cannonballBoostCost = 90;
-var attackSpeedBoostCost = 55;
+var attackSpeedBoostCost = 60;
 var costMultiplier = 1.06; //each purchase of a stat boost increases the cost by this much
 
 /////////////Card Variables
@@ -487,8 +487,8 @@ var turretActive = false;
 //Shield Card Variables
 var shieldXPos = WallWidth + playerWidth + 100;
 var shieldYPos = 50;
-var shieldWidth = 20;
-var shieldHeight = 145;
+var shieldWidth = 25;
+var shieldHeight = 156;
 var shieldMoveSpeed = 0.8;
 var shieldHealth = 500;
 var shieldColor = "blue";
@@ -502,8 +502,8 @@ var turretHeight = 40;
 var turretHealth = 300;
 var turretCannonballWidth = 10;
 var turretCannonballHeight = 50;
-var turretCannonballSpeed; playerCannonballspeed - 2;
-var turretShootInterval = 120;
+var turretCannonballSpeed; playerCannonballspeed - 1;
+var turretShootInterval = 105;
 var turretColor = "blue";
 var turretCostPerUse = 400;
 
@@ -526,7 +526,7 @@ var level1DefenderColor = "red";
 var middleLevel3ChanceOfShooting = 0.07;
 var outerLevel3ChanceOfShooting = 0.009; //original 0.045
 var middleLevel2ChanceOfShooting = 0.03;
-var outerLevel2ChanceOfShooting = 0.008;
+var outerLevel2ChanceOfShooting = 0.0055;
 var level1ChanceOfShooting = 0.018;
 
 //////Defender1 (closest to enemy wall)x level 3 middle
@@ -534,7 +534,7 @@ var defender1Xpos = canvasWidth - enemyWallWidth - defenderGap - defenderWidth;
 var defender1Ypos = 30;
 var defender1YTopRange = 35;
 var defender1YBottomRange = canvasHeight - 35;
-var defender1Health = 400;
+var defender1Health = 500;
 var defender1Height = 300;
 var defender1Speed = .8;
 var defender1Color = middleDefenderColor
@@ -546,7 +546,7 @@ var defender2Xpos = canvasWidth - enemyWallWidth - defenderGap - defenderWidth;
 var defender2Ypos = canvasHeight - defender2Height; 
 var defender2YTopRange = 0; // Will change depending on current Defender1 possition
 var defender2YBottomRange = canvasHeight;
-var defender2Health = 250;
+var defender2Health = 270;
 var defender2Speed = 3.5;
 var defender2TopDefender = "none";
 var defender2BottomDefender = "none";
@@ -557,7 +557,7 @@ var defender3Xpos = canvasWidth - enemyWallWidth - defenderGap - defenderWidth;
 var defender3Ypos = 10;
 var defender3YTopRange = 0;
 var defender3YBottomRange = canvasHeight; // Will change depending on current Defender1 possition
-var defender3Health = 250;
+var defender3Health = 270;
 var defender3Speed = 3;
 var defender3TopDefender = "none";
 var defender3BottomDefender = "none";
@@ -568,7 +568,7 @@ var defender4Xpos = canvasWidth - enemyWallWidth - (defenderGap * 2) - (defender
 var defender4Ypos = 150;
 var defender4YTopRange = 50;
 var defender4YBottomRange = canvasHeight - 50;
-var defender4Health = 300;
+var defender4Health = 400;
 var defender4Height = 200;
 var defender4Speed = 2;
 var defender4Color = middleDefenderColor
@@ -581,7 +581,7 @@ var defender5Xpos = canvasWidth - enemyWallWidth - (defenderGap * 2) - (defender
 var defender5Ypos = canvasHeight - defender5Height - 5;
 var defender5YTopRange = 0; //Will change as Defender4 moves
 var defender5YBottomRange = canvasHeight - 5;
-var defender5Health = 200;
+var defender5Health = 250;
 var defender5Speed = 7;
 var defender5TopDefender = "none";
 var defender5BottomDefender = "none";
@@ -593,7 +593,7 @@ var defender6Xpos = canvasWidth - enemyWallWidth - (defenderGap * 2) - (defender
 var defender6Ypos = 5;
 var defender6YTopRange = 0;
 var defender6YBottomRange = canvasHeight; //Will change as Defender4 moves
-var defender6Health = 200;
+var defender6Health = 250;
 var defender6Speed = 7;
 var defender6TopDefender = "none";
 var defender6BottomDefender = "none";
@@ -605,7 +605,7 @@ var defender7Xpos = canvasWidth - enemyWallWidth - (defenderGap * 3) - (defender
 var defender7Ypos = 150;
 var defender7YTopRange = 70;
 var defender7YBottomRange = canvasHeight - 30;
-var defender7Health = 250;
+var defender7Health = 270;
 var defender7Height = 100;
 var defender7Speed = 6;
 var defender7TopDefender = "none";
@@ -616,7 +616,7 @@ var defender8Xpos = canvasWidth - enemyWallWidth - (defenderGap * 4) - (defender
 var defender8Ypos = 10;
 var defender8YTopRange = 30;
 var defender8YBottomRange = canvasHeight - 70;
-var defender8Health = 250;
+var defender8Health = 290;
 var defender8Height = 100;
 var defender8Speed = 7;
 var defender8TopDefender = "none";
@@ -627,7 +627,7 @@ var defender9Xpos = canvasWidth - enemyWallWidth - (defenderGap * 5) - (defender
 var defender9Ypos = 10;
 var defender9YTopRange = 0;
 var defender9YBottomRange = canvasHeight - 0;
-var defender9Health = 250;
+var defender9Health = 280;
 var defender9Height = 100;
 var defender9Speed = 8;
 var defender9TopDefender = "none";
@@ -638,7 +638,7 @@ var defender10Xpos = canvasWidth - enemyWallWidth - (defenderGap * 6) - (defende
 var defender10Ypos = canvasHeight - 10;
 var defender10YTopRange = 25;
 var defender10YBottomRange = canvasHeight - 25;
-var defender10Health = 250;
+var defender10Health = 300;
 var defender10Height = 100;
 var defender10Speed = 9;
 var defender10TopDefender = "none";
@@ -812,19 +812,19 @@ function displayStats() { // Displays current health of both walls
 	document.getElementById('defenderHealth').innerHTML = getCurrentDenfendersTotalHealth(defenders);
 	if (attackSpeedBoostAvailable){
 		document.getElementById("attackSpeed").style.visibility = "visible";
-		document.getElementById("currentAttackSpeed").innerHTML = "Current Attack Speed Boost: " + shootIntervalReduction + "</br>Cost: " + attackSpeedBoostCost;
+		document.getElementById("currentNextAttackSpeed").innerHTML = "ATTACK SPEED: " + shootInterval + "(-" + attackSpeedBoostAmount + ") frame delay</br>" + attackSpeedBoostCost + " Points";
 	}
 	if (playerSizeBoostAvailable) {
 		document.getElementById("playerSize").style.visibility = "visible";		
-		document.getElementById("currentSize").innerHTML = "Current Size Boost: " + SizeIncreasedAmount + "</br>Cost: " + sizeBoostCost;
+		document.getElementById("currentNextSize").innerHTML = "SIZE: " + playerHeight + "(+" + playerSizeBoostAmount + ") </br>" + sizeBoostCost + " Points";
 	}	
 	if (playerCannonballBoostAvailable) {
 		document.getElementById("cannonballStrength").style.visibility = "visible";		
-		document.getElementById("currentCannonballPower").innerHTML = "Current Power Boost: " + IncreasedDamageAmount * -1 + "</br>Cost: " + cannonballBoostCost;
+		document.getElementById("currentNextDamage").innerHTML = "DAMAGE: " + basicCannonballDamage * -1 + "(+" + playerCannonballDamageBoost * -1 + ") </br>" + cannonballBoostCost + " Points";
 	}
 	if (CardShieldAvailable) {
 		document.getElementById("shield").style.visibility = "visible";	
-		document.getElementById("shield").innerHTML = "<h2>Shield(A)</h2><img src='shield.Png'><h3>Cost " + shieldCostPerUse + "</br>press A to use</br>Remaining HP " + Shield1.health + "</h3>";
+		document.getElementById("shield").innerHTML = "<h2>Shield(A)</h2><img src='shield.png'><h3>Cost " + shieldCostPerUse + "</br>press A to use</br>Remaining HP " + Shield1.health + "</h3>";
 	}				
 	if (CardTurretAvailable) {
 		document.getElementById("turret").style.visibility = "visible";
@@ -893,7 +893,7 @@ function trackPlayerCannonballs(defenders, cannonballSize, cannonballHitsCanTake
 			cannonballs[c][0] += Turret1.cannonballSpeed;			
 		}
 
-		drawCannonball(cannonballs[c][0], cannonballs[c][1], cannonballSize, cannonballSize, playerCannonballColor);
+		drawCannonball(cannonballs[c][0], cannonballs[c][1], cannonballs[c][3], cannonballs[c][4], playerCannonballColor);
 		//////Collision detection
 		if (barriers.length > 0) {
 			for (var bar = 0; bar < barriers.length; bar++) {
