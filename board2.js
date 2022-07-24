@@ -304,7 +304,19 @@ var basicCannonballDamage = -500;
 
 
 
-//Boost Variables
+//////////////Stat boosting variables
+//When these are made true by spending points, the player can see a new stat that can be updated with points
+var unrandomizedArray = ["attackSpeedBoost", "playerSizeBoost", "playerCannonballBoost"]
+var boostsUnavailable = []
+var loopLength = unrandomizedArray.length; // Allows additions to stats. using unrandomizedArray.length would not work
+//randomizes the array so player will get stats in different order each play through
+for (var i = 0; i < loopLength; i++) { 
+	let randomNum = Math.ceil(Math.random() * unrandomizedArray.length - 1)
+	boostsUnavailable.push(unrandomizedArray[randomNum]) ;
+	unrandomizedArray.splice(randomNum, 1);
+}
+var boostsAvailable = []
+
 var attackSpeedBoostAvailable = false;
 var playerSizeBoostAvailable = false;
 var playerCannonballBoostAvailable = false;
@@ -325,6 +337,22 @@ var sizeBoostCost = 80;
 var cannonballBoostCost = 90;
 var attackSpeedBoostCost = 55;
 var costMultiplier = 1.06; //each purchase of a stat boost increases the cost by this much
+
+/////////////Card Variables
+//These can be unlocked with points and used by spending more points
+unrandomizedArray = ["turret","shield"]
+var cardsUnavailable = [];
+var cardsAvailable = [];
+var loopLength = unrandomizedArray.length // Allows additions to cards. using unrandomizedArray.length would not work
+//randomizes the array so player will get cards in different order each play through
+for (var i = 0; i < loopLength; i++) { //randomizes the array so player will get stats in different order each play through
+	let randomNum = Math.ceil(Math.random() * unrandomizedArray.length - 1)
+	cardsUnavailable.push(unrandomizedArray[randomNum]) ;
+	unrandomizedArray.splice(randomNum, 1);
+}
+var CardTurretAvailable = false;
+var CardShieldAvailable = false;
+
 
 //Enemy Wall Health variables
 var EnemyWallHealth = 600;
@@ -510,20 +538,7 @@ Defender3.bottomDefender = Defender1;
 Defender5.topDefender = Defender4;
 Defender6.bottomDefender = Defender4;
 
-//////////////Stat boosting variables
-//When these are made true by spending points, the player can see a new stat that can be updated with points
 
-
-
-
-var unrandomizedArray = ["attackSpeedBoost", "playerSizeBoost", "playerCannonballBoost"]
-var boostsUnavailable = []
-for (var i = 0; i < 3; i++) { //randomizes the array so player will get stats in different order each play through
-	let randomNum = Math.ceil(Math.random() * unrandomizedArray.length - 1)
-	boostsUnavailable.push(unrandomizedArray[randomNum]) ;
-	unrandomizedArray.splice(randomNum, 1);
-}
-var boostsAvailable = []
 
 
 //Variables used to bypass keyboard studder/rappid fire
@@ -643,6 +658,12 @@ function displayStats() { // Displays current health of both walls
 	if (playerCannonballBoostAvailable) {
 		document.getElementById("cannonballStrength").style.visibility = "visible";		
 		document.getElementById("currentCannonballPower").innerHTML = "Current Power Boost: " + IncreasedDamageAmount * -1 + "</br>Cost: " + cannonballBoostCost;
+	}
+	if (CardShieldAvailable) {
+		document.getElementById("shield").style.visibility = "visible";	
+	}
+	if (CardTurretAvailable) {
+		document.getElementById("turret").style.visibility = "visible";	
 	}
 }
 function getCurrentDenfendersTotalHealth(defenders) {
@@ -834,7 +855,7 @@ function movePlayer(e) { //also for various key actions
 	  if (e.keyCode == 32) {
 	  	spaceKeyPress = true;
 	  	}
-	if (e.keyCode == 69 && playerPoints >= newStatCost) {
+	if (e.keyCode == 69 && playerPoints >= newStatCost) { //E
 	  	if (boostsAvailable.length == 0) {
 	  		if (boostsUnavailable[0] == "attackSpeedBoost") {
 	  			attackSpeedBoostAvailable = true;
@@ -896,6 +917,36 @@ function movePlayer(e) { //also for various key actions
 	  			}	  			
 	  		}	
 	  	}
+	if (e.keyCode == 81 && playerPoints >= newCardCost) { //Q
+		if (cardsAvailable.length == 0) {
+			if (cardsUnavailable[0] == "turret") {
+				CardTurretAvailable = true;
+				cardsUnavailable.splice(0,1);
+				cardsAvailable.push("turret")
+				playerPoints -= newCardCost;
+			}
+			else if (cardsUnavailable[0] == "shield") {
+				CardShieldAvailable = true;
+				cardsUnavailable.splice(0,1);
+				cardsAvailable.push("shield")
+				playerPoints -= newCardCost;
+			}
+		}
+		else if (cardsUnavailable.length == 1) {
+			if (cardsUnavailable[0] == "turret") {
+				CardTurretAvailable = true;
+				cardsUnavailable.splice(0,1);
+				cardsAvailable.push("turret")
+				playerPoints -= newCardCost;
+			}
+			else if (cardsUnavailable[0] == "shield") {
+				CardShieldAvailable = true;
+				cardsUnavailable.splice(0,1);
+				cardsAvailable.push("shield")
+				playerPoints -= newCardCost;
+			}
+		}
+	} 
 	if (e.keyCode == 82 && playerPoints >= sizeBoostCost && playerSizeBoostAvailable) {
 		playerHeight += playerSizeBoostAmount;
 		playerPoints -= sizeBoostCost;
