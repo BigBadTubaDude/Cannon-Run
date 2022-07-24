@@ -509,14 +509,14 @@ var turretCostPerUse = 400;
 
 
 //Enemy Wall Health variables
-var EnemyWallHealth = 600;
-var enemyWallWidth = 100;
+var EnemyWallHealth = 500;
+var enemyWallWidth = 80;
 var enemyWallXPos = canvasWidth - enemyWallWidth;
 var enemyWallColor = "rgb(30, 110,30)"
 
 ///////////////////Enemy Defender stats (the different bullet trajectory speeds are declared in the Defender class definition)
 
-var defenderGap = 100;
+var defenderGap = 80;
 var defenderWidth = 20;
 var middleDefenderColor = "rgb(10,10,10)";
 var outerDefenderColor = "green";
@@ -524,10 +524,10 @@ var level1DefenderColor = "red";
 
 //////Each Defender's chance of shooting
 var middleLevel3ChanceOfShooting = 0.07;
-var outerLevel3ChanceOfShooting = 0.01; //original 0.045
+var outerLevel3ChanceOfShooting = 0.009; //original 0.045
 var middleLevel2ChanceOfShooting = 0.025;
-var outerLevel2ChanceOfShooting = 0.01;
-var level1ChanceOfShooting = 0.015;
+var outerLevel2ChanceOfShooting = 0.009;
+var level1ChanceOfShooting = 0.018;
 
 //////Defender1 (closest to enemy wall)x level 3 middle
 var defender1Xpos = canvasWidth - enemyWallWidth - defenderGap - defenderWidth;
@@ -708,7 +708,7 @@ var downKeyPress = false;
 
 //Start the game paused 
 var paused = true;
-
+var gameOver = false;
 
 
 
@@ -746,7 +746,8 @@ function gameLoop() {
 	// Turrer1.shoot();
 
 	//Displays remaining health of player's and enemy's wall
-	displayStats();		
+	displayStats();
+	winOrLoseTest(WallHealth, EnemyWallHealth);		
 		}
 	else {
 		document.addEventListener('keydown', unpauseGame, true);
@@ -1180,8 +1181,20 @@ function keyRelease(e) {
 	if (e.keyCode == 32)
 		spaceKeyPress = false
 		}
-function unlockStat(argument) {
-	// body...
+function winOrLoseTest(WallHealth, EnemyWallHealth) {
+	if (WallHealth <= 0 && !gameOver) {
+		paused = true;
+		document.getElementById('playerHealth').innerHTML = "<h1>YOU LOSE</h1><p> Press U to keep playing</p><p>Refresh page to try again</p>";
+		document.getElementById("playerHealth").style.color = "red";
+		gameOver = true;
+	}
+	if (EnemyWallHealth <= 0 && !gameOver) {
+		paused = true;
+		document.getElementById('playerHealth').innerHTML = "<h1>YOU WIN</h1><p> Press U to keep playing</p><p>Refresh page to try again</p>";
+		document.getElementById("playerHealth").style.color = "red";
+		gameOver = true;
+		
+	}	
 }
 
 
