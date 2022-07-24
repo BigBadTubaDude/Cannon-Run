@@ -423,8 +423,9 @@ var shieldYPos = 50;
 var shieldWidth = 20;
 var shieldHeight = 145;
 var shieldMoveSpeed = 0.8;
-var shieldHealth = 150;
+var shieldHealth = 500;
 var shieldColor = "blue";
+var shieldCostPerUse = 400;
 
 //Enemy Wall Health variables
 var EnemyWallHealth = 600;
@@ -610,8 +611,9 @@ Defender3.bottomDefender = Defender1;
 Defender5.topDefender = Defender4;
 Defender6.bottomDefender = Defender4;
 
+////////Shield 
 var Shield1 = new Shield(shieldXPos, shieldYPos, shieldWidth, shieldHeight, shieldMoveSpeed, shieldHealth, shieldColor);
-Shield1.activate();
+// Shield1.activate();
 
 
 //Variables used to bypass keyboard studder/rappid fire
@@ -1040,6 +1042,10 @@ function movePlayer(e) { //also for various key actions
 		playerPoints -= attackSpeedBoostCost;
 		attackSpeedBoostCost = Math.floor(attackSpeedBoostCost * costMultiplier);
 	  	shootIntervalReduction += 1; // tally total amount improved
+		}
+	if (e.keyCode == 65 && playerPoints >= shieldCostPerUse && CardShieldAvailable && !shieldActive) {
+		Shield1.activate();
+		playerPoints -= shieldCostPerUse;
 		}
 	}
 
