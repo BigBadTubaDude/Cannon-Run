@@ -73,7 +73,7 @@ class Defender {
 			this.bulletColor = "rgb(255,0,0)"
 			this.bulletDamage = -1;
 			this.destroyPointsGained = 4;
-			this.catchPointsGained = 5;
+			this.catchPointsGained = 20;
 		}
 		else if (levelArray == level2Defenders){ 
 			if (this.middleDefender == true) { //Level 2 middle defender bullet stats
@@ -492,6 +492,23 @@ var attackSpeedBoostAvailable = false;
 var playerSizeBoostAvailable = false;
 var playerCannonballBoostAvailable = false;
 
+var attackSpeedBoostAmount = 3; //frames between shots reduction
+var playerSizeBoost = 15;
+var playerCannonballDamageBoost = 10;
+var playerCannonballShotsCanTakeBoost = 1;
+
+var newStatCost = 100;
+var newCardCost = 200;
+
+var unrandomizedArray = ["attackSpeedBoost", "playerSizeBoost", "playerCannonballBoost"]
+var boostsUnavailable = []
+for (var i = 0; i < 3; i++) {
+	let randomNum = Math.ceil(Math.random() * unrandomizedArray.length - 1)
+	boostsUnavailable.push(unrandomizedArray[randomNum]) ;
+	unrandomizedArray.splice(randomNum, 1);
+}
+var boostsAvailable = []
+
 
 //Variables used to bypass keyboard studder/rappid fire
 var leftKeyPress = false;
@@ -540,7 +557,7 @@ function gameLoop() {
 		}
 	else {
 		document.addEventListener('keydown', unpauseGame, true);
-	} 
+		} 
 
 	}
 
@@ -669,6 +686,7 @@ function trackPlayerCannonballs(defenders, cannonballs, cannonballSize, cannonba
 								cannonballs[c][2] -= 1;
 								if (cannonballs[c][2] == 0) {
 									cannonballs.splice(c,1)
+									continue
 									}															
 								}
 							}
@@ -681,6 +699,7 @@ function trackPlayerCannonballs(defenders, cannonballs, cannonballSize, cannonba
 									cannonballs[c][2] -= 1;
 									if (cannonballs[c][2] == 0) {
 										cannonballs.splice(c,1)
+										continue
 										}																	
 									}								
 								}
@@ -692,7 +711,8 @@ function trackPlayerCannonballs(defenders, cannonballs, cannonballSize, cannonba
 										defenders[d].listOfBullets.splice(b,1);
 										playerPoints += defenders[d].destroyPointsGained;
 										}
-									cannonballs.splice(c,1)					
+									cannonballs.splice(c,1)
+									continue					
 									}
 								}
 							}
@@ -705,6 +725,7 @@ function trackPlayerCannonballs(defenders, cannonballs, cannonballSize, cannonba
 									cannonballs[c][2] -= 1;
 									if (cannonballs[c][2] == 0) {
 										cannonballs.splice(c,1)
+										continue
 										}																	
 									}								
 								}
@@ -716,7 +737,8 @@ function trackPlayerCannonballs(defenders, cannonballs, cannonballSize, cannonba
 										defenders[d].listOfBullets.splice(b,1);
 										playerPoints += defenders[d].destroyPointsGained;
 										}
-									cannonballs.splice(c,1)					
+									cannonballs.splice(c,1)	
+									continue				
 									}
 								}
 							}														
@@ -752,7 +774,6 @@ function pauseGame(e) {
 }
 function unpauseGame(e) {
 	if (e.keyCode == 85) {
-		console.log("foo")
 		paused = false;
 	}
 	
@@ -764,12 +785,76 @@ function movePlayer(e) {
 	  }
 	if ((e.keyCode == 40 || e.keyCode == 83) && (playerYPos + playerHeight) <= canvasHeight) { //down move
 	  downKeyPress = true;
-	 }
+	 	}
 	  if (e.keyCode == 32) {
 	  	spaceKeyPress = true;
+	  	}
+	  if (e.keyCode == 69 && playerPoints >= newStatCost) {
+	  	if (boostsAvailable.length == 0) {
+	  		if (boostsUnavailable[0] == "attackSpeedBoost") {
+	  			attackSpeedBoostAvailable = true;
+	  			boostsUnavailable.splice(0, 1);
+	  			boostsAvailable.push("attackSpeedBoost");
+	  			playerPoints -= newStatCost;
+	  			}
+	  		else if (boostsUnavailable[0] == "playerSizeBoost") {
+	  			playerSizeBoostAvailable = true;
+	  			boostsUnavailable.splice(0, 1);
+	  			boostsAvailable.push("playerSizeBoost");
+	  			playerPoints -= newStatCost;	  			
+	  			} 
+	  		else {
+	  			playerCannonballBoostAvailable = true;
+	  			boostsUnavailable.splice(0, 1);
+	  			boostsAvailable.push("playerCannonball");
+	  			playerPoints -= newStatCost;	  			
+	  			}
+	  		}
+	  	else if (boostsAvailable.length == 1) {
+	  		if (boostsUnavailable[0] == "attackSpeed") {
+		  		attackSpeedBoostAvailable = true;
+		  		boostsUnavailable.splice(0, 1);
+		  		boostsAvailable.push("attackSpeedBoost");
+		  		playerPoints -= newStatCost;		  			
+	  			}
+	  		else if (boostsUnavailable[0] == "playerSizeBoost") {
+	  			playerSizeBoostAvailable = true;
+	  			boostsUnavailable.splice(0, 1);
+	  			boostsAvailable.push("playerSizeBoost");
+	  			playerPoints -= newStatCost;	
+	  			}
+	  		else {
+	  			playerCannonballBoostAvailable = true;
+	  			boostsUnavailable.splice(0, 1);
+	  			boostsAvailable.push("playerCannonballBoost");
+	  			playerPoints -= newStatCost;		  			
+	  			}
+	  		}
+	  	else if (boostsAvailable.length == 2) {
+	  		if (boostsUnavailable[0] == "attackSpeedBoost") {
+		  		attackSpeedBoostAvailable = true;
+		  		boostsUnavailable.splice(0, 1);
+		  		boostsAvailable.push("attackSpeedBoost");
+		  		playerPoints -= newStatCost;		  			
+	  			}
+	  		else if (boostsUnavailable[0] == "playerSizeBoost") {
+	  			playerSizeBoostAvailable = true;
+	  			boostsUnavailable.splice(0, 1);
+	  			boostsAvailable.push("playerSizeBoost");
+	  			playerPoints -= newStatCost;	
+	  			}
+	  		else {
+	  			playerCannonballBoostAvailable = true;
+	  			boostsUnavailable.splice(2, 1);
+	  			boostsAvailable.push("playerCannonballBoost");
+	  			playerPoints -= newStatCost;		  			
+	  			}	  			
+	  		}
+  		
+	  	}
 	  }
-	 createPlayer(playerXPos, playerYPos, playerWidth, playerHeight, playerColor);
-	}
+
+	
 function makeMovementSmooth() { //This works in conjenctions with downKeyPress = true (ect.) and keyRelease function to stop jagged player movement
 	if (upKeyPress && playerYPos >= 0) {
 		playerYPos -= playerMoveSpeed;
@@ -794,6 +879,8 @@ function keyRelease(e) {
 	if (e.keyCode == 32)
 		spaceKeyPress = false
 		}
-
+function unlockStat(argument) {
+	// body...
+}
 
 
