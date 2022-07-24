@@ -69,6 +69,12 @@
 .statBoost {
 	visibility: hidden;
 }
+.statBoost h2 {
+	font-weight: bolder;
+	font-size: 1.2em;
+	margin:  0;
+}
 .jsFilled {
 	font-size: 0.9em;
 }
+#defenderHealth {}

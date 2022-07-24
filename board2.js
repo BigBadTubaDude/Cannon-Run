@@ -824,7 +824,7 @@ function displayStats() { // Displays current health of both walls
 	}
 	if (CardShieldAvailable) {
 		document.getElementById("shield").style.visibility = "visible";	
-		document.getElementById("shield").innerHTML = "<h2>Shield(A)</h2><img src='shield.PNG'><h3>Cost " + shieldCostPerUse + "</br>press A to use</br>Remaining HP " + Shield1.health + "</h3>";
+		document.getElementById("shield").innerHTML = "<h2>Shield(A)</h2><img src='shield.Png'><h3>Cost " + shieldCostPerUse + "</br>press A to use</br>Remaining HP " + Shield1.health + "</h3>";
 	}				
 	if (CardTurretAvailable) {
 		document.getElementById("turret").style.visibility = "visible";
