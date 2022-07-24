@@ -290,7 +290,8 @@ var playerWidth = 20;
 var playerHeight = 80; //og 80
 var playerXPos = WallWidth;
 var playerYPos = (canvasHeight / 2) - (playerHeight / 2); //Middle of canvas
-var playerColor = "rgb(100,100,100)"
+var playerColor = "rgb(100,100,100)";
+var damageDoneToCaughtOuterBullets = 0; //can be increased with power ups
 
 //Basic Cannonball variables
 var cannonballHitsCanTake = 4;
@@ -479,14 +480,17 @@ Defender9.list();
 var Defender10 = new Defender(defender10Xpos, defender10Ypos, defender10YTopRange, defender10YBottomRange, defenderWidth,defender10Height,defender10Color,defender10Speed,defender10Health,true,true, defender10TopDefender, defender10BottomDefender, level1Defenders, level1ChanceOfShooting);
 Defender10.list();
 
-
-
-
 //Assigns defenders which defender to look when calculating max or min range of motion
 Defender2.topDefender = Defender1;
 Defender3.bottomDefender = Defender1;
 Defender5.topDefender = Defender4;
 Defender6.bottomDefender = Defender4;
+
+//////////////Stat boosting variables
+//When these are made true by spending points, the player can see a new stat that can be updated with points
+var attackSpeedBoostAvailable = false;
+var playerSizeBoostAvailable = false;
+var playerCannonballBoostAvailable = false;
 
 
 //Variables used to bypass keyboard studder/rappid fire
@@ -495,11 +499,10 @@ var spaceKeyPress = false;
 var upKeyPress = false;
 var downKeyPress = false;
 
-var paused = true
-// while (paused) {
 
+//Start the game paused 
+var paused = true;
 
-// }
 
 
 
@@ -595,7 +598,15 @@ function displayStats() { // Displays current health of both walls
 	document.getElementById('playerHealth').innerHTML = WallHealth + " Wall HP";
 	document.getElementById('enemyHealth').innerHTML = EnemyWallHealth + " Wall HP";
 	document.getElementById('points').innerHTML = playerPoints + " Points";
-
+	if (attackSpeedBoostAvailable) {
+		document.getElementById("playerSize").style.visibility = "visible";
+	}
+	if (playerSizeBoostAvailable) {
+		document.getElementById("cannonballStrength").style.visibility = "visible";		
+	}	
+	if (playerCannonballBoostAvailable) {
+		document.getElementById("attackSpeed").style.visibility = "visible";		
+	}
 }
 function createPlayer(xpos,ypos,width, height, color){
 	context.fillStyle = color;

@@ -41,3 +41,9 @@
 	height: 150px;
 	width: 125px;
 }
+#cards > div {
+	visibility: hidden;
+}
+.statBoost {
+	visibility: hidden;
+}
