@@ -750,6 +750,7 @@ function gameLoop() {
 	// Turrer1.shoot();
 
 	//Displays remaining health of player's and enemy's wall
+	displayHealth();
 	displayStats();
 	winOrLoseTest(WallHealth, EnemyWallHealth);		
 		}
@@ -757,6 +758,8 @@ function gameLoop() {
 		document.addEventListener('keydown', unpauseGame, true);
 		document.addEventListener('keydown', upgradePlayer, true);
 		displayStats();
+		displayHealth();
+		winOrLoseTest();
 		} 
 
 	}
@@ -811,11 +814,16 @@ function drawMoveShootHealthCheckDefenders(level1Defenders, level2Defenders) {
 		}
 	}
 }
-function displayStats() { // Displays current health of both walls
+function displayHealth() {
+if (!gameOver) {
 	document.getElementById('playerHealth').innerHTML = WallHealth + " Wall HP";
 	document.getElementById('points').innerHTML = playerPoints + " Points";
 	document.getElementById('enemyHealth').innerHTML = EnemyWallHealth + " Wall HP";
 	document.getElementById('defenderHealth').innerHTML = getCurrentDenfendersTotalHealth(defenders);
+	}
+}
+function displayStats() { // Displays current health of both walls
+
 	if (attackSpeedBoostAvailable){
 		document.getElementById("attackSpeed").style.visibility = "visible";
 		document.getElementById("currentNextAttackSpeed").innerHTML = "ATTACK SPEED: " + shootInterval + "(-" + attackSpeedBoostAmount + ") frame delay</br>" + attackSpeedBoostCost + " Points";
@@ -835,8 +843,9 @@ function displayStats() { // Displays current health of both walls
 	if (CardTurretAvailable) {
 		document.getElementById("turret").style.visibility = "visible";
 		document.getElementById("turret").innerHTML = "<h2>Turret(D)</h2><img src='turret.png'><h3>Cost " + turretCostPerUse + "</br>press D to use</br>Remaining HP " + Turret1.health + "</h3>";			
+		}
 	}
-}
+
 function getCurrentDenfendersTotalHealth(defenders) {
 	let total = 0;
 	if (level1Defenders.length > 0) {
@@ -1202,7 +1211,6 @@ function winOrLoseTest(WallHealth, EnemyWallHealth) {
 		document.getElementById('playerHealth').innerHTML = "<h1>YOU WIN</h1><p> Press U to keep playing</p><p>Refresh page to try again</p>";
 		document.getElementById("playerHealth").style.color = "red";
 		gameOver = true;
-		
 	}	
 }
 
