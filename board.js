@@ -755,6 +755,8 @@ function gameLoop() {
 		}
 	else {
 		document.addEventListener('keydown', unpauseGame, true);
+		document.addEventListener('keydown', upgradePlayer, true);
+		displayStats();
 		} 
 
 	}
@@ -1025,7 +1027,7 @@ function unpauseGame(e) {
 	}
 	
 }
-function movePlayer(e) { //also for various key actions
+function movePlayer(e) {
 	e.preventDefault();
 	if ((e.keyCode == 38 || e.keyCode == 87) && playerYPos >= 0) { // up move
 	  upKeyPress = true;
@@ -1036,97 +1038,100 @@ function movePlayer(e) { //also for various key actions
 	  if (e.keyCode == 32) {
 	  	spaceKeyPress = true;
 	  	}
+	
+	}
+function upgradePlayer(e) {
 	if (e.keyCode == 69 && playerPoints >= newStatCost) { //E
-	  	if (boostsAvailable.length == 0) {
-	  		if (boostsUnavailable[0] == "attackSpeedBoost") {
-	  			attackSpeedBoostAvailable = true;
-	  			boostsUnavailable.splice(0, 1);
-	  			boostsAvailable.push("attackSpeedBoost");
-	  			playerPoints -= newStatCost;
-	  			}
-	  		else if (boostsUnavailable[0] == "playerSizeBoost") {
-	  			playerSizeBoostAvailable = true;
-	  			boostsUnavailable.splice(0, 1);
-	  			boostsAvailable.push("playerSizeBoost");
-	  			playerPoints -= newStatCost;	  			
-	  			} 
-	  		else if (boostsUnavailable[0] == "playerCannonballBoost") {
-	  			playerCannonballBoostAvailable = true;
-	  			boostsUnavailable.splice(0, 1);
-	  			boostsAvailable.push("playerCannonballBoost");
-	  			playerPoints -= newStatCost;	  			
-	  			}
-	  		}
-	  	else if (boostsAvailable.length == 1) {
-	  		if (boostsUnavailable[0] == "attackSpeedBoost") {
-		  		attackSpeedBoostAvailable = true;
-		  		boostsUnavailable.splice(0, 1);
-		  		boostsAvailable.push("attackSpeedBoost");
-		  		playerPoints -= newStatCost;		  			
-	  			}
-	  		else if (boostsUnavailable[0] == "playerSizeBoost") {
-	  			playerSizeBoostAvailable = true;
-	  			boostsUnavailable.splice(0, 1);
-	  			boostsAvailable.push("playerSizeBoost");
-	  			playerPoints -= newStatCost;	
-	  			}
-	  		else if (boostsUnavailable[0] == "playerCannonballBoost") {
-	  			playerCannonballBoostAvailable = true;
-	  			boostsUnavailable.splice(0, 1);
-	  			boostsAvailable.push("playerCannonballBoost");
-	  			playerPoints -= newStatCost;		  			
-	  			}
-	  		}
-	  	else if (boostsAvailable.length == 2) {
-	  		if (boostsUnavailable[0] == "attackSpeedBoost") {
-		  		attackSpeedBoostAvailable = true;
-		  		boostsUnavailable.splice(0, 1);
-		  		boostsAvailable.push("attackSpeedBoost");
-		  		playerPoints -= newStatCost;		  			
-	  			}
-	  		else if (boostsUnavailable[0] == "playerSizeBoost") {
-	  			playerSizeBoostAvailable = true;
-	  			boostsUnavailable.splice(0, 1);
-	  			boostsAvailable.push("playerSizeBoost");
-	  			playerPoints -= newStatCost;	
-	  			}
-	  		else if (boostsUnavailable[0] == "playerCannonballBoost"){
-	  			playerCannonballBoostAvailable = true;
-	  			boostsUnavailable.splice(2, 1);
-	  			boostsAvailable.push("playerCannonballBoost");
-	  			playerPoints -= newStatCost;		  			
-	  			}	  			
-	  		}	
-	  	}
-	if (e.keyCode == 81 && playerPoints >= newCardCost) { //Q
-		if (cardsAvailable.length == 0) {
-			if (cardsUnavailable[0] == "turret") {
-				CardTurretAvailable = true;
-				cardsUnavailable.splice(0,1);
-				cardsAvailable.push("turret")
-				playerPoints -= newCardCost;
+		  	if (boostsAvailable.length == 0) {
+		  		if (boostsUnavailable[0] == "attackSpeedBoost") {
+		  			attackSpeedBoostAvailable = true;
+		  			boostsUnavailable.splice(0, 1);
+		  			boostsAvailable.push("attackSpeedBoost");
+		  			playerPoints -= newStatCost;
+		  			}
+		  		else if (boostsUnavailable[0] == "playerSizeBoost") {
+		  			playerSizeBoostAvailable = true;
+		  			boostsUnavailable.splice(0, 1);
+		  			boostsAvailable.push("playerSizeBoost");
+		  			playerPoints -= newStatCost;	  			
+		  			} 
+		  		else if (boostsUnavailable[0] == "playerCannonballBoost") {
+		  			playerCannonballBoostAvailable = true;
+		  			boostsUnavailable.splice(0, 1);
+		  			boostsAvailable.push("playerCannonballBoost");
+		  			playerPoints -= newStatCost;	  			
+		  			}
+		  		}
+		  	else if (boostsAvailable.length == 1) {
+		  		if (boostsUnavailable[0] == "attackSpeedBoost") {
+			  		attackSpeedBoostAvailable = true;
+			  		boostsUnavailable.splice(0, 1);
+			  		boostsAvailable.push("attackSpeedBoost");
+			  		playerPoints -= newStatCost;		  			
+		  			}
+		  		else if (boostsUnavailable[0] == "playerSizeBoost") {
+		  			playerSizeBoostAvailable = true;
+		  			boostsUnavailable.splice(0, 1);
+		  			boostsAvailable.push("playerSizeBoost");
+		  			playerPoints -= newStatCost;	
+		  			}
+		  		else if (boostsUnavailable[0] == "playerCannonballBoost") {
+		  			playerCannonballBoostAvailable = true;
+		  			boostsUnavailable.splice(0, 1);
+		  			boostsAvailable.push("playerCannonballBoost");
+		  			playerPoints -= newStatCost;		  			
+		  			}
+		  		}
+		  	else if (boostsAvailable.length == 2) {
+		  		if (boostsUnavailable[0] == "attackSpeedBoost") {
+			  		attackSpeedBoostAvailable = true;
+			  		boostsUnavailable.splice(0, 1);
+			  		boostsAvailable.push("attackSpeedBoost");
+			  		playerPoints -= newStatCost;		  			
+		  			}
+		  		else if (boostsUnavailable[0] == "playerSizeBoost") {
+		  			playerSizeBoostAvailable = true;
+		  			boostsUnavailable.splice(0, 1);
+		  			boostsAvailable.push("playerSizeBoost");
+		  			playerPoints -= newStatCost;	
+		  			}
+		  		else if (boostsUnavailable[0] == "playerCannonballBoost"){
+		  			playerCannonballBoostAvailable = true;
+		  			boostsUnavailable.splice(2, 1);
+		  			boostsAvailable.push("playerCannonballBoost");
+		  			playerPoints -= newStatCost;		  			
+		  			}	  			
+		  		}	
+		  	}
+		if (e.keyCode == 81 && playerPoints >= newCardCost) { //Q
+			if (cardsAvailable.length == 0) {
+				if (cardsUnavailable[0] == "turret") {
+					CardTurretAvailable = true;
+					cardsUnavailable.splice(0,1);
+					cardsAvailable.push("turret")
+					playerPoints -= newCardCost;
+				}
+				else if (cardsUnavailable[0] == "shield") {
+					CardShieldAvailable = true;
+					cardsUnavailable.splice(0,1);
+					cardsAvailable.push("shield")
+					playerPoints -= newCardCost;
+				}
 			}
-			else if (cardsUnavailable[0] == "shield") {
-				CardShieldAvailable = true;
-				cardsUnavailable.splice(0,1);
-				cardsAvailable.push("shield")
-				playerPoints -= newCardCost;
+			else if (cardsUnavailable.length == 1) {
+				if (cardsUnavailable[0] == "turret") {
+					CardTurretAvailable = true;
+					cardsUnavailable.splice(0,1);
+					cardsAvailable.push("turret")
+					playerPoints -= newCardCost;
+				}
+				else if (cardsUnavailable[0] == "shield") {
+					CardShieldAvailable = true;
+					cardsUnavailable.splice(0,1);
+					cardsAvailable.push("shield")
+					playerPoints -= newCardCost;
+				}
 			}
-		}
-		else if (cardsUnavailable.length == 1) {
-			if (cardsUnavailable[0] == "turret") {
-				CardTurretAvailable = true;
-				cardsUnavailable.splice(0,1);
-				cardsAvailable.push("turret")
-				playerPoints -= newCardCost;
-			}
-			else if (cardsUnavailable[0] == "shield") {
-				CardShieldAvailable = true;
-				cardsUnavailable.splice(0,1);
-				cardsAvailable.push("shield")
-				playerPoints -= newCardCost;
-			}
-		}
 	} 
 	if (e.keyCode == 82 && playerPoints >= sizeBoostCost && playerSizeBoostAvailable) {
 		playerHeight += playerSizeBoostAmount;
@@ -1158,7 +1163,7 @@ function movePlayer(e) { //also for various key actions
 		Turret1.health = turretHealth;
 		playerPoints -= turretCostPerUse;
 		}
-	}
+}
 
 	
 function makeMovementSmooth() { //This works in conjenctions with downKeyPress = true (ect.) and keyRelease function to stop jagged player movement
