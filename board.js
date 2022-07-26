@@ -202,8 +202,8 @@ class Defender {
 				this.bulletHeight = 7;				
 				this.bulletColor = "rgb(20,100,255)"
 				this.bulletDamage = -1.5;
-				this.bulletDestroyPointsGained = 10;
-				this.catchPointsGained = 12;
+				this.bulletDestroyPointsGained = 9;
+				this.catchPointsGained = 11;
 				this.defenderDestroyedPointsGained = 400;				
 				}
 			else { //Level 3 outer defender bullet stats
@@ -469,7 +469,7 @@ var newCardCost = 200;
 var sizeBoostCost = 80;
 var cannonballBoostCost = 90;
 var attackSpeedBoostCost = 60;
-var costMultiplier = 1.06; //each purchase of a stat boost increases the cost by this much
+var costMultiplier = 1.12; //each purchase of a stat boost increases the cost by this much
 
 /////////////Card Variables
 //These can be unlocked with points and used by spending more points
@@ -531,7 +531,7 @@ var middleLevel3ChanceOfShooting = 0.07;
 var outerLevel3ChanceOfShooting = 0.009; //original 0.045
 var middleLevel2ChanceOfShooting = 0.03;
 var outerLevel2ChanceOfShooting = 0.0055;
-var level1ChanceOfShooting = 0.0195;
+var level1ChanceOfShooting = 0.0209;
 
 //////Defender1 (closest to enemy wall)x level 3 middle
 var defender1Xpos = canvasWidth - enemyWallWidth - defenderGap - defenderWidth;
@@ -817,10 +817,11 @@ function drawMoveShootHealthCheckDefenders(level1Defenders, level2Defenders) {
 function displayHealth() {
 if (!gameOver) {
 	document.getElementById('playerHealth').innerHTML = WallHealth + " Wall HP";
+}
 	document.getElementById('points').innerHTML = playerPoints + " Points";
 	document.getElementById('enemyHealth').innerHTML = EnemyWallHealth + " Wall HP";
 	document.getElementById('defenderHealth').innerHTML = getCurrentDenfendersTotalHealth(defenders);
-	}
+	
 }
 function displayStats() { // Displays current health of both walls
 
