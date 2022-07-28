@@ -527,10 +527,10 @@ var outerDefenderColor = "green";
 var level1DefenderColor = "red";
 
 //////Each Defender's chance of shooting
-var middleLevel3ChanceOfShooting = 0.07;
-var outerLevel3ChanceOfShooting = 0.009; //original 0.045
-var middleLevel2ChanceOfShooting = 0.03;
-var outerLevel2ChanceOfShooting = 0.0055;
+var middleLevel3ChanceOfShooting = 0.09;
+var outerLevel3ChanceOfShooting = 0.007; //original 0.045
+var middleLevel2ChanceOfShooting = 0.04;
+var outerLevel2ChanceOfShooting = 0.0045;
 var level1ChanceOfShooting = 0.022;
 
 //////Defender1 (closest to enemy wall)x level 3 middle
