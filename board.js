@@ -461,7 +461,7 @@ var IncreasedDamageAmount = 0; //for player's cannonballs
 
 var attackSpeedBoostAmount = 1; //frames between shots reduction
 var playerSizeBoostAmount = 10;
-var playerCannonballDamageBoost = -10;
+var playerCannonballDamageBoost = -6;
 var playerCannonballHitsCanTakeBoost = 1;
 //Upgrade Costs
 var newStatCost = 100;
