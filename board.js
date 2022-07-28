@@ -159,7 +159,7 @@ class Defender {
 			this.bulletWidth = 10;
 			this.bulletHeight = 10;
 			this.bulletColor = "rgb(255,0,0)"
-			this.bulletDamage = -1; //negative
+			this.bulletDamage = -1.5; //negative
 			this.bulletDestroyPointsGained = 4;
 			this.catchPointsGained = 6;
 			this.defenderDestroyedPointsGained = 100;
@@ -175,13 +175,13 @@ class Defender {
 				this.bulletColor = "rgb(20,100,255)"
 				this.bulletDamage = -2;
 				this.bulletDestroyPointsGained = 7;
-				this.catchPointsGained = 9;	
+				this.catchPointsGained = 8;	
 				this.defenderDestroyedPointsGained = 250;			
 				}
 			else { //Level 2 outer defender bullet stats
 				this.bulletX = 0;
 				this.bulletY = 0;
-				this.XTrajectory = 2;
+				this.XTrajectory = 2.5;
 				this.YTrajectory = 0;
 				this.bulletWidth = 43;
 				this.bulletHeight = 43;
@@ -202,8 +202,8 @@ class Defender {
 				this.bulletHeight = 7;				
 				this.bulletColor = "rgb(20,100,255)"
 				this.bulletDamage = -1.5;
-				this.bulletDestroyPointsGained = 9;
-				this.catchPointsGained = 11;
+				this.bulletDestroyPointsGained = 8;
+				this.catchPointsGained = 10;
 				this.defenderDestroyedPointsGained = 400;				
 				}
 			else { //Level 3 outer defender bullet stats
@@ -464,12 +464,12 @@ var playerSizeBoostAmount = 10;
 var playerCannonballDamageBoost = -10;
 var playerCannonballHitsCanTakeBoost = 1;
 //Upgrade Costs
-var newStatCost = 80;
+var newStatCost = 100;
 var newCardCost = 200;
 var sizeBoostCost = 80;
 var cannonballBoostCost = 90;
-var attackSpeedBoostCost = 60;
-var costMultiplier = 1.12; //each purchase of a stat boost increases the cost by this much
+var attackSpeedBoostCost = 65;
+var costMultiplier = 1.13; //each purchase of a stat boost increases the cost by this much
 
 /////////////Card Variables
 //These can be unlocked with points and used by spending more points
@@ -531,14 +531,14 @@ var middleLevel3ChanceOfShooting = 0.07;
 var outerLevel3ChanceOfShooting = 0.009; //original 0.045
 var middleLevel2ChanceOfShooting = 0.03;
 var outerLevel2ChanceOfShooting = 0.0055;
-var level1ChanceOfShooting = 0.0209;
+var level1ChanceOfShooting = 0.022;
 
 //////Defender1 (closest to enemy wall)x level 3 middle
 var defender1Xpos = canvasWidth - enemyWallWidth - defenderGap - defenderWidth;
 var defender1Ypos = 30;
 var defender1YTopRange = 35;
 var defender1YBottomRange = canvasHeight - 35;
-var defender1Health = 500;
+var defender1Health = 1000;
 var defender1Height = 300;
 var defender1Speed = .8;
 var defender1Color = middleDefenderColor
@@ -550,8 +550,8 @@ var defender2Xpos = canvasWidth - enemyWallWidth - defenderGap - defenderWidth;
 var defender2Ypos = canvasHeight - defender2Height; 
 var defender2YTopRange = 0; // Will change depending on current Defender1 possition
 var defender2YBottomRange = canvasHeight;
-var defender2Health = 270;
-var defender2Speed = 3.5;
+var defender2Health = 300;
+var defender2Speed = 4;
 var defender2TopDefender = "none";
 var defender2BottomDefender = "none";
 var defender2Color = outerDefenderColor;
@@ -561,8 +561,8 @@ var defender3Xpos = canvasWidth - enemyWallWidth - defenderGap - defenderWidth;
 var defender3Ypos = 10;
 var defender3YTopRange = 0;
 var defender3YBottomRange = canvasHeight; // Will change depending on current Defender1 possition
-var defender3Health = 270;
-var defender3Speed = 3;
+var defender3Health = 300;
+var defender3Speed = 3.5;
 var defender3TopDefender = "none";
 var defender3BottomDefender = "none";
 var defender3Color = outerDefenderColor;
@@ -572,7 +572,7 @@ var defender4Xpos = canvasWidth - enemyWallWidth - (defenderGap * 2) - (defender
 var defender4Ypos = 150;
 var defender4YTopRange = 50;
 var defender4YBottomRange = canvasHeight - 50;
-var defender4Health = 400;
+var defender4Health = 800;
 var defender4Height = 200;
 var defender4Speed = 2;
 var defender4Color = middleDefenderColor
@@ -585,7 +585,7 @@ var defender5Xpos = canvasWidth - enemyWallWidth - (defenderGap * 2) - (defender
 var defender5Ypos = canvasHeight - defender5Height - 5;
 var defender5YTopRange = 0; //Will change as Defender4 moves
 var defender5YBottomRange = canvasHeight - 5;
-var defender5Health = 250;
+var defender5Health = 290;
 var defender5Speed = 7;
 var defender5TopDefender = "none";
 var defender5BottomDefender = "none";
@@ -597,7 +597,7 @@ var defender6Xpos = canvasWidth - enemyWallWidth - (defenderGap * 2) - (defender
 var defender6Ypos = 5;
 var defender6YTopRange = 0;
 var defender6YBottomRange = canvasHeight; //Will change as Defender4 moves
-var defender6Health = 250;
+var defender6Health = 290;
 var defender6Speed = 7;
 var defender6TopDefender = "none";
 var defender6BottomDefender = "none";
@@ -717,6 +717,7 @@ var gameOver = false;
 
 
 //Run Game
+displayStaticCosts()
 function gameLoop() {
 	//Clears board for next frame draw
 	if (!paused){
@@ -814,9 +815,13 @@ function drawMoveShootHealthCheckDefenders(level1Defenders, level2Defenders) {
 		}
 	}
 }
+function displayStaticCosts() {
+	document.getElementById("cardCost").innerHTML = "Q(" + newCardCost + ")"
+	document.getElementById("statCost").innerHTML = "E(" + newStatCost + ")"
+}
 function displayHealth() {
 if (!gameOver) {
-	document.getElementById('playerHealth').innerHTML = WallHealth + " Wall HP";
+	document.getElementById('playerHealth').innerHTML = Math.floor(WallHealth) + " Wall HP";
 }
 	document.getElementById('points').innerHTML = playerPoints + " Points";
 	document.getElementById('enemyHealth').innerHTML = EnemyWallHealth + " Wall HP";
