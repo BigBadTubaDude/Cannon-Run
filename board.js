@@ -1182,7 +1182,7 @@ function upgradePlayer(e) {
 				}
 			}
 	} 
-	if (e.keyCode == 82 && playerPoints >= sizeBoostCost && playerSizeBoostAvailable) {
+	if (e.keyCode == 82 && playerPoints >= sizeBoostCost && playerSizeBoostAvailable && playerHeight < canvasHeight) {
 		playerHeight += playerSizeBoostAmount;
 		playerPoints -= sizeBoostCost;
 		cannonballSize += 2; // help make up for being unable to hit things on the edges
@@ -1196,7 +1196,7 @@ function upgradePlayer(e) {
 		cannonballBoostCost = Math.floor(cannonballBoostCost * costMultiplier);
 		IncreasedDamageAmount += playerCannonballDamageBoost; // tally total amount increased
 		}
-	if (e.keyCode == 70 && playerPoints >= attackSpeedBoostCost && attackSpeedBoostAvailable) {
+	if (e.keyCode == 70 && playerPoints >= attackSpeedBoostCost && attackSpeedBoostAvailable && shootInterval > 1) {
 		shootInterval -= attackSpeedBoostAmount;
 		playerPoints -= attackSpeedBoostCost;
 		attackSpeedBoostCost = Math.floor(attackSpeedBoostCost * costMultiplier);
