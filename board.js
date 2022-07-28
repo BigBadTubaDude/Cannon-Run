@@ -201,7 +201,7 @@ class Defender {
 				this.bulletWidth = 15;
 				this.bulletHeight = 7;				
 				this.bulletColor = "rgb(20,100,255)"
-				this.bulletDamage = -1.5;
+				this.bulletDamage = -2;
 				this.bulletDestroyPointsGained = 7;
 				this.catchPointsGained = 9;
 				this.defenderDestroyedPointsGained = 400;				
