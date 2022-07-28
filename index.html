@@ -12,7 +12,11 @@
 		<link rel="stylesheet" href="board.css"></link>
 	</head>
 	<body>
-		<h1 id="timer">00:00:0</h1>
+		<div id="titleBanner">
+			<h1 id="timer">00:00:0</h1>
+			<h1>CANNON RUN</h1>
+		</div>
+
 		<canvas id="gameBoard"></canvas>
 		<div id="statsDisplay">
 			<div id="PlayerStats">
@@ -48,20 +52,38 @@
 					-If enemy bullets hit your wall, you lose HP</br>
 					-Use points to buy cards or the ability to upgrade your stats</br>					
 					-You lose if your wall HP is brought to zero</br>
-					-Destroy all enemy defenders and bring the enemy wall HP to zero to WIN!</br>				
+					-Destroy all enemy defenders and bring the enemy wall HP to zero to WIN!</br>
+<!-- 					STAT BOOST DESCRIPTIONS </br>
+					Size - Increases the size of the player and their bullets</br>
+					Damage - Increases the amount of damage your shots do to enemies and large bullets</br>
+					Durability - Increases the number of small bullets your shots can hit before being destroyed</br>
+					Attack Speed - reduces the number of frames you have to wait to shoot again</br> -->
+
 				</p>
 			</div>
 			<div id="unlock">
 				<h2>Press to Boost Stats</h2>
+
+					<!-- </br>
+					</br>
+					Attack Speed - reduces the number of frames you have to wait to shoot again</br> -->
 				<div class = "statBoost" id="playerSize">
+					<p class="hover" id="statHoverSize">Size - Increases the size of the player and their bullets</br></p>
 					<h3>R</h3>
 					<h2 class = "jsFilled"id="currentNextSize">Size</h2>
 				</div>
-				<div class = "statBoost" id="cannonballStrength">
+				<div class = "statBoost" id="cannonballDamage">
+					<p class="hover" id="statHoverDamage">Damage - Increases the amount of damage your shots do to enemies and large bullets</br></p>
 					<h3>T</h3>
 					<h2 class = "jsFilled"  id="currentNextDamage">Damage</h2>				
 				</div>
+				<div class="statBoost" id="cannonballDurability">
+					<p class="hover" id="statHoverDurability">Durability - Increases the number of small bullets your shots can hit before being destroyed</br></p>
+					<h3>X</h3>
+					<h2 class = "jsFilled"  id="currentNextDurability">Durability</h2>								
+				</div>
 				<div class = "statBoost" id="attackSpeed">
+					<p class="hover" id="statHoverAttackSpeed">Attack Speed - reduces the number of frames you have to wait to shoot again</br></p>
 					<h3>F</h3>
 					<h2 class = "jsFilled"  id="currentNextAttackSpeed">attack speed</h2>				
 				</div>										

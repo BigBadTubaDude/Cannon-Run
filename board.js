@@ -439,9 +439,10 @@ var basicCannonballDamage = -20;
 
 //////////////Stat boosting variables
 //When these are made true by spending points, the player can see a new stat that can be updated with points
-var unrandomizedArray = ["attackSpeedBoost", "playerSizeBoost", "playerCannonballBoost"]
+var unrandomizedArray = ["attackSpeedBoost", "playerSizeBoost", "playerCannonballDamageBoost", "playerCannonballDurabilityBoost"]
 var boostsUnavailable = []
-var loopLength = unrandomizedArray.length; // Allows additions to stats. using unrandomizedArray.length would not work
+var loopLength = unrandomizedArray.length; 
+// Allows additions to stats. using unrandomizedArray.length would not work
 //randomizes the array so player will get stats in different order each play through
 for (var i = 0; i < loopLength; i++) { 
 	let randomNum = Math.ceil(Math.random() * unrandomizedArray.length - 1)
@@ -452,24 +453,27 @@ var boostsAvailable = []
 
 var attackSpeedBoostAvailable = false;
 var playerSizeBoostAvailable = false;
-var playerCannonballBoostAvailable = false;
+var playerCannonballDamageBoostAvailable = false;
+var playerCannonballDurabilityBoostAvailable = false;
 
 //Tallies for amount improved with stat boosts
 var SizeIncreasedAmount = 0; // tally total amount increased
 var shootIntervalReduction = 0; //amount it has been reduced. for display
 var IncreasedDamageAmount = 0; //for player's cannonballs
+var IncreasedHitsCanTakeAmount = 0
 
 var attackSpeedBoostAmount = 1; //frames between shots reduction
-var playerSizeBoostAmount = 10;
+var playerSizeBoostAmount = 8;
 var playerCannonballDamageBoost = -6;
 var playerCannonballHitsCanTakeBoost = 1;
 //Upgrade Costs
 var newStatCost = 100;
 var newCardCost = 200;
 var sizeBoostCost = 80;
-var cannonballBoostCost = 90;
+var cannonballDamageBoostCost = 90;
+var cannonballDurabilityBoostCost = 60;
 var attackSpeedBoostCost = 65;
-var costMultiplier = 1.15; //each purchase of a stat boost increases the cost by this much
+var costMultiplier = 1.13; //each purchase of a stat boost increases the cost by this much
 
 /////////////Card Variables
 //These can be unlocked with points and used by spending more points
@@ -527,10 +531,10 @@ var outerDefenderColor = "green";
 var level1DefenderColor = "red";
 
 //////Each Defender's chance of shooting
-var middleLevel3ChanceOfShooting = 0.09;
-var outerLevel3ChanceOfShooting = 0.01; 
+var middleLevel3ChanceOfShooting = 0.07;
+var outerLevel3ChanceOfShooting = 0.0075; 
 var middleLevel2ChanceOfShooting = 0.04;
-var outerLevel2ChanceOfShooting = 0.0065;
+var outerLevel2ChanceOfShooting = 0.005;
 var level1ChanceOfShooting = 0.022;
 
 //////Defender1 (closest to enemy wall)x level 3 middle
@@ -872,9 +876,13 @@ function displayStats() { // Displays current health of both walls
 		document.getElementById("playerSize").style.visibility = "visible";		
 		document.getElementById("currentNextSize").innerHTML = "SIZE: " + playerHeight + "(+" + playerSizeBoostAmount + ") </br>" + sizeBoostCost + " Points";
 	}	
-	if (playerCannonballBoostAvailable) {
-		document.getElementById("cannonballStrength").style.visibility = "visible";		
-		document.getElementById("currentNextDamage").innerHTML = "DAMAGE: " + basicCannonballDamage * -1 + "(+" + playerCannonballDamageBoost * -1 + ") </br>" + cannonballBoostCost + " Points";
+	if (playerCannonballDamageBoostAvailable) {
+		document.getElementById("cannonballDamage").style.visibility = "visible";		
+		document.getElementById("currentNextDamage").innerHTML = "DAMAGE: " + basicCannonballDamage * -1 + "(+" + playerCannonballDamageBoost * -1 + ") </br>" + cannonballDamageBoostCost + " Points";
+	}
+	if (playerCannonballDurabilityBoostAvailable) {
+		document.getElementById("cannonballDurability").style.visibility = "visible";		
+		document.getElementById("currentNextDurability").innerHTML = "DURABILITY: " + (cannonballHitsCanTake + IncreasedHitsCanTakeAmount) + "(+" + playerCannonballHitsCanTakeBoost + ") </br>" + cannonballDurabilityBoostCost + " Points";
 	}
 	if (CardShieldAvailable) {
 		document.getElementById("shield").style.visibility = "visible";	
@@ -1104,12 +1112,18 @@ function upgradePlayer(e) {
 		  			boostsAvailable.push("playerSizeBoost");
 		  			playerPoints -= newStatCost;	  			
 		  			} 
-		  		else if (boostsUnavailable[0] == "playerCannonballBoost") {
-		  			playerCannonballBoostAvailable = true;
+		  		else if (boostsUnavailable[0] == "playerCannonballDamageBoost") {
+		  			playerCannonballDamageBoostAvailable = true;
 		  			boostsUnavailable.splice(0, 1);
-		  			boostsAvailable.push("playerCannonballBoost");
+		  			boostsAvailable.push("playerCannonballDamageBoost");
 		  			playerPoints -= newStatCost;	  			
 		  			}
+		  		else if (boostsUnavailable[0] == "playerCannonballDurabilityBoost") {
+		  			playerCannonballDurabilityBoostAvailable = true;
+		  			boostsUnavailable.splice(0, 1);
+		  			boostsAvailable.push("playerCannonballDurabilityBoost");
+		  			playerPoints -= newStatCost;
+		  				}
 		  		}
 		  	else if (boostsAvailable.length == 1) {
 		  		if (boostsUnavailable[0] == "attackSpeedBoost") {
@@ -1124,12 +1138,18 @@ function upgradePlayer(e) {
 		  			boostsAvailable.push("playerSizeBoost");
 		  			playerPoints -= newStatCost;	
 		  			}
-		  		else if (boostsUnavailable[0] == "playerCannonballBoost") {
-		  			playerCannonballBoostAvailable = true;
+		  		else if (boostsUnavailable[0] == "playerCannonballDamageBoost") {
+		  			playerCannonballDamageBoostAvailable = true;
 		  			boostsUnavailable.splice(0, 1);
-		  			boostsAvailable.push("playerCannonballBoost");
+		  			boostsAvailable.push("playerCannonballDamageBoost");
 		  			playerPoints -= newStatCost;		  			
 		  			}
+		  		else if (boostsUnavailable[0] == "playerCannonballDurabilityBoost") {
+		  			playerCannonballDurabilityBoostAvailable = true;
+		  			boostsUnavailable.splice(0, 1);
+		  			boostsAvailable.push("playerCannonballDurabilityBoost");
+		  			playerPoints -= newStatCost;
+		  				}		  			
 		  		}
 		  	else if (boostsAvailable.length == 2) {
 		  		if (boostsUnavailable[0] == "attackSpeedBoost") {
@@ -1144,13 +1164,45 @@ function upgradePlayer(e) {
 		  			boostsAvailable.push("playerSizeBoost");
 		  			playerPoints -= newStatCost;	
 		  			}
-		  		else if (boostsUnavailable[0] == "playerCannonballBoost"){
-		  			playerCannonballBoostAvailable = true;
-		  			boostsUnavailable.splice(2, 1);
-		  			boostsAvailable.push("playerCannonballBoost");
+		  		else if (boostsUnavailable[0] == "playerCannonballDamageBoost"){
+		  			playerCannonballDamageBoostAvailable = true;
+		  			boostsUnavailable.splice(0, 1);
+		  			boostsAvailable.push("playerCannonballDamageBoost");
 		  			playerPoints -= newStatCost;		  			
-		  			}	  			
-		  		}	
+		  			}	 
+		  		else if (boostsUnavailable[0] == "playerCannonballDurabilityBoost") {
+		  			playerCannonballDurabilityBoostAvailable = true;
+		  			boostsUnavailable.splice(0, 1);
+		  			boostsAvailable.push("playerCannonballDurabilityBoost");
+		  			playerPoints -= newStatCost;
+		  				}		  			 			
+		  		}
+		  	else if (boostsAvailable.length == 3) {
+		  		if (boostsUnavailable[0] == "attackSpeedBoost") {
+			  		attackSpeedBoostAvailable = true;
+			  		boostsUnavailable.splice(0, 1);
+			  		boostsAvailable.push("attackSpeedBoost");
+			  		playerPoints -= newStatCost;		  			
+		  			}
+		  		else if (boostsUnavailable[0] == "playerSizeBoost") {
+		  			playerSizeBoostAvailable = true;
+		  			boostsUnavailable.splice(0, 1);
+		  			boostsAvailable.push("playerSizeBoost");
+		  			playerPoints -= newStatCost;	
+		  			}
+		  		else if (boostsUnavailable[0] == "playerCannonballDamageBoost"){
+		  			playerCannonballDamageBoostAvailable = true;
+		  			boostsUnavailable.splice(0, 1);
+		  			boostsAvailable.push("playerCannonballDamageBoost");
+		  			playerPoints -= newStatCost;		  			
+		  			}	 
+		  		else if (boostsUnavailable[0] == "playerCannonballDurabilityBoost") {
+		  			playerCannonballDurabilityBoostAvailable = true;
+		  			boostsUnavailable.splice(0, 1);
+		  			boostsAvailable.push("playerCannonballDurabilityBoost");
+		  			playerPoints -= newStatCost;
+		  				}		  			 			
+		  		}		  		
 		  	}
 		if (e.keyCode == 81 && playerPoints >= newCardCost) { //Q
 			if (cardsAvailable.length == 0) {
@@ -1189,12 +1241,17 @@ function upgradePlayer(e) {
 		sizeBoostCost = Math.floor(sizeBoostCost * costMultiplier)
 		SizeIncreasedAmount += playerSizeBoostAmount; // tally total amount increased		
 		}
-	if (e.keyCode == 84 && playerPoints >= cannonballBoostCost && playerCannonballBoostAvailable) {
-		cannonballHitsCanTake += playerCannonballHitsCanTakeBoost;
+	if (e.keyCode == 84 && playerPoints >= cannonballDamageBoostCost && playerCannonballDamageBoostAvailable) {
 		basicCannonballDamage += playerCannonballDamageBoost;
-		playerPoints -= cannonballBoostCost;
-		cannonballBoostCost = Math.floor(cannonballBoostCost * costMultiplier);
+		playerPoints -= cannonballDamageBoostCost;
+		cannonballDamageBoostCost = Math.floor(cannonballDamageBoostCost * costMultiplier);
 		IncreasedDamageAmount += playerCannonballDamageBoost; // tally total amount increased
+		}
+	if (e.keyCode == 88 && playerPoints >= cannonballDurabilityBoostCost && playerCannonballDamageBoostAvailable) {
+		cannonballHitsCanTake += playerCannonballHitsCanTakeBoost;
+		playerPoints -= cannonballDurabilityBoostCost;
+		cannonballDurabilityBoostCost = Math.floor(cannonballDurabilityBoostCost * costMultiplier);
+		IncreasedHitsCanTakeAmount += playerCannonballHitsCanTakeBoost; // tally total amount increased
 		}
 	if (e.keyCode == 70 && playerPoints >= attackSpeedBoostCost && attackSpeedBoostAvailable && shootInterval > 1) {
 		shootInterval -= attackSpeedBoostAmount;

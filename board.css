@@ -20,7 +20,7 @@
 	font-size: 1.4em;
 	text-align: center;
 }
-#unlock h3, #unlock p {
+#unlock h3, #unlock > p {
 	margin: 0;
 	padding:  0;
 	text-align: center;
@@ -51,7 +51,7 @@
 	margin-bottom: 0;
 	margin-top: 5px;
 }
-#instructions p {
+#instructions > p {
 	margin-bottom: 0;
 	margin-top: 5px;
 	text-align: left;
@@ -81,4 +81,33 @@
 .jsFilled {
 	font-size: 0.9em;
 }
-#defenderHealth {}
+#titleBanner {
+	display: grid;
+	width: 1700;
+	justify-items: center;
+	grid-template-columns: 20% 80%;
+}
+div.statBoost > p.hover {
+	position: absolute;
+	background-color: rgb(225,50,50);
+	font-size:	1.2em;
+	padding: 5px;
+	color: white;
+	width: 160px;
+	border: solid 1px grey;
+	visibility: hidden;
+
+
+}
+#AttackSpeed:hover > #statHoverAttackSpeed{
+	visibility: visible	;
+}
+#cannonballDamage:hover > #statHoverDamage{
+	visibility: visible	;
+}
+#cannonballDurability:hover > #statHoverDurability {
+	visibility: visible	;
+}
+#playerSize:hover > #statHoverSize{
+	visibility: visible	;
+}
