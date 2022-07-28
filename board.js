@@ -174,8 +174,8 @@ class Defender {
 				this.bulletHeight = 5;
 				this.bulletColor = "rgb(20,100,255)"
 				this.bulletDamage = -2;
-				this.bulletDestroyPointsGained = 7;
-				this.catchPointsGained = 8;	
+				this.bulletDestroyPointsGained = 6;
+				this.catchPointsGained = 7;	
 				this.defenderDestroyedPointsGained = 250;			
 				}
 			else { //Level 2 outer defender bullet stats
@@ -202,8 +202,8 @@ class Defender {
 				this.bulletHeight = 7;				
 				this.bulletColor = "rgb(20,100,255)"
 				this.bulletDamage = -1.5;
-				this.bulletDestroyPointsGained = 8;
-				this.catchPointsGained = 10;
+				this.bulletDestroyPointsGained = 7;
+				this.catchPointsGained = 9;
 				this.defenderDestroyedPointsGained = 400;				
 				}
 			else { //Level 3 outer defender bullet stats
@@ -469,7 +469,7 @@ var newCardCost = 200;
 var sizeBoostCost = 80;
 var cannonballBoostCost = 90;
 var attackSpeedBoostCost = 65;
-var costMultiplier = 1.13; //each purchase of a stat boost increases the cost by this much
+var costMultiplier = 1.15; //each purchase of a stat boost increases the cost by this much
 
 /////////////Card Variables
 //These can be unlocked with points and used by spending more points
@@ -714,6 +714,12 @@ var downKeyPress = false;
 var paused = true;
 var gameOver = false;
 
+//Timer
+var frame = 0;
+var deciSec = 0;
+var min = 0;
+var sec = 0;
+var stopTime = true;
 
 
 //Run Game
@@ -721,6 +727,7 @@ displayStaticCosts()
 function gameLoop() {
 	//Clears board for next frame draw
 	if (!paused){
+	startTimer();
 	context.clearRect(0, 0, canvasWidth, canvasHeight);
 
 	//Listens for key strokes and key releases
@@ -761,13 +768,40 @@ function gameLoop() {
 		displayStats();
 		displayHealth();
 		winOrLoseTest();
+		stopTimer();
 		} 
 
 	}
 
 
 ////////////Functions
+/////TIMER
+function startTimer() {
+	if (stopTime) {
+		timerCycle();
+	}
+}
+function stopTimer() {
+	stopTime = true;	
+}
+function timerCycle() {
+		frame += 1;
+		if (frame == 6) {
+			frame = 0;
+			deciSec	+= 1;
+		}
 
+		if (deciSec	 == 10) {
+			sec += 1;
+			deciSec = 0;
+		}
+		if (sec == 60) {
+			min += 1;
+			sec = 0;
+		}
+	document.getElementById("timer").innerHTML = "0" + min + ":" + sec + "." + deciSec;	 
+}
+//////BARRIERS
 function drawBarriers(barriers, level1Defenders, level2Defenders) {
 	if (level1Defenders.length > 0) {
 		Barrier1.draw(context);
