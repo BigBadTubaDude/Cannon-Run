@@ -181,7 +181,7 @@ class Defender {
 			else { //Level 2 outer defender bullet stats
 				this.bulletX = 0;
 				this.bulletY = 0;
-				this.XTrajectory = 2.5;
+				this.XTrajectory = 3;
 				this.YTrajectory = 0;
 				this.bulletWidth = 43;
 				this.bulletHeight = 43;
@@ -209,13 +209,13 @@ class Defender {
 			else { //Level 3 outer defender bullet stats
 				this.bulletX = 0;
 				this.bulletY = 0;
-				this.XTrajectory = 2; //2
+				this.XTrajectory = 2.5; //2
 				this.YTrajectory = 2;
 				if (this == Defender3) {
 					this.YTrajectory *= -1; //top defender bullets start by going up instead of down
 				}
-				this.bulletWidth = 50;
-				this.bulletHeight = 50;
+				this.bulletWidth = 60;
+				this.bulletHeight = 60;
 				this.bulletHealth = 180;				
 				this.bulletColor = "rgb(255,215,0)"
 				this.bulletDamage = -90;
@@ -426,7 +426,7 @@ var playerColor = "rgb(100,100,100)";
 var damageDoneToCaughtOuterBullets = 0; //can be increased with power ups
 
 //Basic Cannonball variables
-var cannonballHitsCanTake = 2;
+var cannonballHitsCanTake = 1;
 var cannonballSize = 33;
 var playerCannonballColor = "black";
 var playerCannonballspeed = 13;
@@ -464,16 +464,16 @@ var IncreasedHitsCanTakeAmount = 0
 
 var attackSpeedBoostAmount = 1; //frames between shots reduction
 var playerSizeBoostAmount = 8;
-var playerCannonballDamageBoost = -6;
+var playerCannonballDamageBoost = -5;
 var playerCannonballHitsCanTakeBoost = 1;
 //Upgrade Costs
 var newStatCost = 100;
 var newCardCost = 200;
 var sizeBoostCost = 80;
-var cannonballDamageBoostCost = 90;
-var cannonballDurabilityBoostCost = 60;
+var cannonballDamageBoostCost = 100;
+var cannonballDurabilityBoostCost = 70;
 var attackSpeedBoostCost = 65;
-var costMultiplier = 1.13; //each purchase of a stat boost increases the cost by this much
+var costMultiplier = 1.14; //each purchase of a stat boost increases the cost by this much
 
 /////////////Card Variables
 //These can be unlocked with points and used by spending more points
@@ -507,11 +507,11 @@ var turretXPos = 0;
 var turretYPos = 0; // Will be randomized
 var turretWidth =  WallWidth + playerWidth + 30;
 var turretHeight = 40;
-var turretHealth = 300;
+var turretHealth = 200;
 var turretCannonballWidth = 10;
 var turretCannonballHeight = 50;
-var turretCannonballSpeed = 5;
-var turretShootInterval = 69;
+var turretCannonballSpeed = 3;
+var turretShootInterval = 70;
 var turretColor = "blue";
 var turretCostPerUse = 400;
 
@@ -549,7 +549,7 @@ var defender1Color = middleDefenderColor
 var defender1TopDefender = "none";
 var defender1BottomDefender = "none";
 //////Defender2 level 3 low defender
-var defender2Height = 20;
+var defender2Height = 15;
 var defender2Xpos = canvasWidth - enemyWallWidth - defenderGap - defenderWidth;
 var defender2Ypos = canvasHeight - defender2Height; 
 var defender2YTopRange = 0; // Will change depending on current Defender1 possition
@@ -577,7 +577,7 @@ var defender4Ypos = 150;
 var defender4YTopRange = 50;
 var defender4YBottomRange = canvasHeight - 50;
 var defender4Health = 800;
-var defender4Height = 200;
+var defender4Height = 250;
 var defender4Speed = 2;
 var defender4Color = middleDefenderColor
 var defender4TopDefender = "none";
@@ -694,12 +694,9 @@ var Defender10 = new Defender(defender10Xpos, defender10Ypos, defender10YTopRang
 Defender10.list();
 
 //Assigns defenders which defender to look when calculating max or min range of motion
-Defender1.topDefender =	Defender3;
-Defender1.bottomDefender = Defender2;
+
 Defender2.topDefender = Defender1;
 Defender3.bottomDefender = Defender1;
-Defender4.topDefender = Defender6;
-Defender4.bottomDefender = Defender5;		
 Defender5.topDefender = Defender4;
 Defender6.bottomDefender = Defender4;
 
