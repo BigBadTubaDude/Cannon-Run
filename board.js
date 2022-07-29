@@ -416,7 +416,7 @@ var WallColor = "rgb(50,50,50)";
 
 ///////////////////////////PLAYER VARIABLES
 
-var playerPoints = 1000;
+var playerPoints = 100;
 var playerMoveSpeed = 7;
 var playerWidth = 20;
 var playerHeight = 80; //og 80
