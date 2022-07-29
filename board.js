@@ -426,7 +426,7 @@ var playerColor = "rgb(100,100,100)";
 var damageDoneToCaughtOuterBullets = 0; //can be increased with power ups
 
 //Basic Cannonball variables
-var cannonballHitsCanTake = 3;
+var cannonballHitsCanTake = 2;
 var cannonballSize = 33;
 var playerCannonballColor = "black";
 var playerCannonballspeed = 13;
@@ -555,7 +555,7 @@ var defender2Ypos = canvasHeight - defender2Height;
 var defender2YTopRange = 0; // Will change depending on current Defender1 possition
 var defender2YBottomRange = canvasHeight;
 var defender2Health = 300;
-var defender2Speed = 4;
+var defender2Speed = 4.5;
 var defender2TopDefender = "none";
 var defender2BottomDefender = "none";
 var defender2Color = outerDefenderColor;
@@ -566,7 +566,7 @@ var defender3Ypos = 10;
 var defender3YTopRange = 0;
 var defender3YBottomRange = canvasHeight; // Will change depending on current Defender1 possition
 var defender3Health = 300;
-var defender3Speed = 3.5;
+var defender3Speed = 4;
 var defender3TopDefender = "none";
 var defender3BottomDefender = "none";
 var defender3Color = outerDefenderColor;
@@ -590,7 +590,7 @@ var defender5Ypos = canvasHeight - defender5Height - 5;
 var defender5YTopRange = 0; //Will change as Defender4 moves
 var defender5YBottomRange = canvasHeight - 5;
 var defender5Health = 290;
-var defender5Speed = 7;
+var defender5Speed = 7.5;
 var defender5TopDefender = "none";
 var defender5BottomDefender = "none";
 var defender5Color = outerDefenderColor;
@@ -694,8 +694,12 @@ var Defender10 = new Defender(defender10Xpos, defender10Ypos, defender10YTopRang
 Defender10.list();
 
 //Assigns defenders which defender to look when calculating max or min range of motion
+Defender1.topDefender =	Defender3;
+Defender1.bottomDefender = Defender2;
 Defender2.topDefender = Defender1;
 Defender3.bottomDefender = Defender1;
+Defender4.topDefender = Defender6;
+Defender4.bottomDefender = Defender5;		
 Defender5.topDefender = Defender4;
 Defender6.bottomDefender = Defender4;
 
