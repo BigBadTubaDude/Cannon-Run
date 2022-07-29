@@ -416,8 +416,8 @@ var WallColor = "rgb(50,50,50)";
 
 ///////////////////////////PLAYER VARIABLES
 
-var playerPoints = 100;
-var playerMoveSpeed = 5;
+var playerPoints = 1000;
+var playerMoveSpeed = 7;
 var playerWidth = 20;
 var playerHeight = 80; //og 80
 var playerXPos = WallWidth;
@@ -429,8 +429,8 @@ var damageDoneToCaughtOuterBullets = 0; //can be increased with power ups
 var cannonballHitsCanTake = 3;
 var cannonballSize = 33;
 var playerCannonballColor = "black";
-var playerCannonballspeed = 4;
-var shootInterval = 40 ; //Number of frames before player can shoot again. EX. At 60 fps, 30 frames would be half a second.
+var playerCannonballspeed = 13;
+var shootInterval = 52 ; //Number of frames before player can shoot again. EX. At 60 fps, 30 frames would be half a second.
 var framesElapsedSinceShot = 0; // Frames since last player generated Cannonball
 var framesElapsedSinceTurretShot = 0;
 var basicCannonballDamage = -20; 
@@ -510,8 +510,8 @@ var turretHeight = 40;
 var turretHealth = 300;
 var turretCannonballWidth = 10;
 var turretCannonballHeight = 50;
-var turretCannonballSpeed; playerCannonballspeed - 1;
-var turretShootInterval = 105;
+var turretCannonballSpeed = 5;
+var turretShootInterval = 69;
 var turretColor = "blue";
 var turretCostPerUse = 400;
 
@@ -882,7 +882,7 @@ function displayStats() { // Displays current health of both walls
 	}
 	if (playerCannonballDurabilityBoostAvailable) {
 		document.getElementById("cannonballDurability").style.visibility = "visible";		
-		document.getElementById("currentNextDurability").innerHTML = "DURABILITY: " + (cannonballHitsCanTake + IncreasedHitsCanTakeAmount) + "(+" + playerCannonballHitsCanTakeBoost + ") </br>" + cannonballDurabilityBoostCost + " Points";
+		document.getElementById("currentNextDurability").innerHTML = "DURABILITY: " + cannonballHitsCanTake + "(+" + playerCannonballHitsCanTakeBoost + ") </br>" + cannonballDurabilityBoostCost + " Points";
 	}
 	if (CardShieldAvailable) {
 		document.getElementById("shield").style.visibility = "visible";	
@@ -1247,7 +1247,7 @@ function upgradePlayer(e) {
 		cannonballDamageBoostCost = Math.floor(cannonballDamageBoostCost * costMultiplier);
 		IncreasedDamageAmount += playerCannonballDamageBoost; // tally total amount increased
 		}
-	if (e.keyCode == 88 && playerPoints >= cannonballDurabilityBoostCost && playerCannonballDamageBoostAvailable) {
+	if (e.keyCode == 88 && playerPoints >= cannonballDurabilityBoostCost && playerCannonballDurabilityBoostAvailable) {
 		cannonballHitsCanTake += playerCannonballHitsCanTakeBoost;
 		playerPoints -= cannonballDurabilityBoostCost;
 		cannonballDurabilityBoostCost = Math.floor(cannonballDurabilityBoostCost * costMultiplier);
