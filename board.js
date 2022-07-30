@@ -514,6 +514,7 @@ var turretCannonballSpeed = 3;
 var turretShootInterval = 70;
 var turretColor = "blue";
 var turretCostPerUse = 400;
+var turretCannonballHitsCanTake = 5;
 
 
 //Enemy Wall Health variables
@@ -532,7 +533,7 @@ var level1DefenderColor = "red";
 
 //////Each Defender's chance of shooting
 var middleLevel3ChanceOfShooting = 0.07;
-var outerLevel3ChanceOfShooting = 0.0075; 
+var outerLevel3ChanceOfShooting = 0.007; 
 var middleLevel2ChanceOfShooting = 0.04;
 var outerLevel2ChanceOfShooting = 0.005;
 var level1ChanceOfShooting = 0.022;
@@ -940,11 +941,11 @@ function trackPlayerCannonballs(defenders, cannonballSize, cannonballHitsCanTake
 	framesElapsedSinceShot += 1; //counter to tell if player cannon can shoot again yet
 	framesElapsedSinceTurretShot += 1;
 	if (spaceKeyPress && framesElapsedSinceShot >= shootInterval) {
-		createCannonball(playerXPos,playerYPos + (playerHeight * 0.5) - (cannonballSize * 0.5),cannonballHitsCanTake, cannonballSize, cannonballSize, playerHeight, false);//This math centers the Cannonball in the players platform
+		createCannonball(playerXPos,playerYPos + (playerHeight * 0.5) - (cannonballSize * 0.5), cannonballHitsCanTake, cannonballSize, cannonballSize, playerHeight, false);//This math centers the Cannonball in the players platform
 		framesElapsedSinceShot = 0;
 	}
 	if (turretActive && framesElapsedSinceTurretShot >= turretShootInterval) {
-		createCannonball(Turret1.xpos, Turret1.ypos, cannonballHitsCanTake, Turret1.cannonballWidth, Turret1.cannonballHeight, Turret1.height, true);
+		createCannonball(Turret1.xpos, Turret1.ypos, turretCannonballHitsCanTake, Turret1.cannonballWidth, Turret1.cannonballHeight, Turret1.height, true);
 		framesElapsedSinceTurretShot = 0;		
 	}
 	//Track basic cannonballs shot by player
@@ -981,8 +982,12 @@ function trackPlayerCannonballs(defenders, cannonballSize, cannonballHitsCanTake
 						if (defenders[d].health + basicCannonballDamage <= 0) { // If defender will be destroyed by this hit, add points to player points
 							playerPoints += defenders[d].defenderDestroyedPointsGained;
 						}
-						defenders[d].health += basicCannonballDamage; 
-
+						if (cannonballs[c][5]) {
+								defenders[d].health += basicCannonballDamage / 2 + 5;							
+						}
+						else {
+								defenders[d].health += basicCannonballDamage;
+						}
 					}
 
 				else if (defenders[d].listOfBullets.length > 0)	{ 
@@ -1013,8 +1018,13 @@ function trackPlayerCannonballs(defenders, cannonballSize, cannonballHitsCanTake
 								}
 							else {
 								if (detectCollision(cannonballs[c][0], cannonballs[c][1], cannonballSize, cannonballSize, defenders[d].listOfBullets[b][0], defenders[d].listOfBullets[b][1], defenders[d].bulletWidth, defenders[d].bulletHeight)) {
-									//Checks for collision between level2 outer bullets and player cannonballs									   
-									defenders[d].listOfBullets[b][4] +=  basicCannonballDamage;
+									//Checks for collision between level2 outer bullets and player cannonballs									   									
+								if (cannonballs[c][5]) {
+										defenders[d].listOfBullets[b][4] += basicCannonballDamage / 2 + 5;							
+								}
+								else {
+										defenders[d].listOfBullets[b][4] += basicCannonballDamage;
+								}
 									if (defenders[d].listOfBullets[b][4] <= 0) {									
 										defenders[d].listOfBullets.splice(b,1);
 										playerPoints += defenders[d].bulletDestroyPointsGained;
@@ -1038,7 +1048,12 @@ function trackPlayerCannonballs(defenders, cannonballSize, cannonballHitsCanTake
 							else {
 								if (detectCollision(cannonballs[c][0], cannonballs[c][1], cannonballSize, cannonballSize, defenders[d].listOfBullets[b][0], defenders[d].listOfBullets[b][1], defenders[d].bulletWidth, defenders[d].bulletHeight)) {
 									//Checks for collision between level 3 outer bullets and player cannonballs									   
-									defenders[d].listOfBullets[b][4] +=  basicCannonballDamage;
+									if (cannonballs[c][5]) {
+										defenders[d].listOfBullets[b][4] += basicCannonballDamage / 2 + 5;							
+										}
+									else {
+										defenders[d].listOfBullets[b][4] += basicCannonballDamage;
+										}									
 									if (defenders[d].listOfBullets[b][4] <= 0) {										
 										defenders[d].listOfBullets.splice(b,1);
 										playerPoints += defenders[d].bulletDestroyPointsGained;
